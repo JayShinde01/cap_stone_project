@@ -1,0 +1,37 @@
+[
+  {
+    "id": "site-3b3a61",
+    "name": "netflix",
+    "fileCount": 1,
+    "url": "http://aws-s3-static-website-jay-2026.s3-website.ap-south-1.amazonaws.com/site-3b3a61/",
+    "createdAt": "2026-10-04T16:08:32.831197+00:00"
+  },
+  {
+    "id": "site-a176ec",
+    "name": "travel",
+    "fileCount": 1,
+    "url": "http://aws-s3-static-website-jay-2026.s3-website.ap-south-1.amazonaws.com/site-a176ec/",
+    "createdAt": "2026-10-04T16:08:10.440711+00:00"
+  },
+  {
+    "id": "site-7c82c9",
+    "name": "travel",
+    "fileCount": 1,
+    "url": "http://aws-s3-static-website-jay-2026.s3-website.ap-south-1.amazonaws.com",
+    "createdAt": "2026-10-04T16:03:54.366673+00:00"
+  },
+  {
+    "id": "site-89ee7d",
+    "name": "netflix",
+    "fileCount": 1,
+    "url": "http://aws-s3-static-website-jay-2026.s3-website.ap-south-1.amazonaws.com",
+    "createdAt": "2026-10-04T16:03:05.635322+00:00"
+  },
+  {
+    "id": "site-750e37",
+    "name": "netflix",
+    "fileCount": 1,
+    "url": "http://aws-s3-static-website-jay-2026.s3-website-ap-south-1.amazonaws.com",
+    "createdAt": "2026-10-04T16:00:13.728298+00:00"
+  }
+]

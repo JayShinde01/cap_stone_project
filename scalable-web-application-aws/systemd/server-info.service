@@ -1,0 +1,13 @@
+[Unit]
+Description=EC2 Server Info Flask Application
+After=network.target
+
+[Service]
+User=ubuntu
+WorkingDirectory=/home/ubuntu
+ExecStart=/usr/bin/python3 /home/ubuntu/server.py
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
