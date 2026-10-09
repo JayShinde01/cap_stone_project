@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Movie Ticket Booking</title>
+
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+        <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap"
+            rel="stylesheet">
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <div class="film-strip film-strip-top" aria-hidden="true"></div>
+
+    <div class="app-container">
+
+        <!-- =========================================
+             LEFT SIDE - BOOKING
+        ========================================== -->
+
+        <section class="booking-card">
+
+            <div class="page-header">
+
+                <span class="eyebrow">
+                    <i class="fa-solid fa-clapperboard"></i>
+                    Tonight at the movies
+                </span>
+
+                <h1>Book Your Tickets</h1>
+
+                <p>
+                    Choose your movie, date, showtime and seats
+                </p>
+
+            </div>
+
+
+            <!-- =====================================
+                 MOVIE
+            ====================================== -->
+
+            <div class="form-group">
+
+                <label for="movie">
+                    Movie
+                </label>
+
+                <select id="movie">
+
+                    <option value="Avengers">
+                        Avengers
+                    </option>
+
+                    <option value="Avatar">
+                        Avatar
+                    </option>
+
+                    <option value="Interstellar">
+                        Interstellar
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- =====================================
+                 DATE
+            ====================================== -->
+
+            <div class="form-group">
+
+                <label>
+                    Select Date
+                </label>
+
+                <div class="date-container"
+                     id="dateContainer">
+
+                    <!-- JavaScript will create dates here -->
+
+                </div>
+
+            </div>
+
+
+            <!-- =====================================
+                 SHOW TIME
+            ====================================== -->
+
+            <div class="form-group">
+
+                <label>
+                    Select Showtime
+                </label>
+
+                <div class="time-container"
+                     id="timeContainer">
+
+                    <!-- JavaScript will create showtimes here -->
+
+                </div>
+
+            </div>
+
+
+            <!-- =====================================
+                 SEATS HEADER
+            ====================================== -->
+
+            <div class="seat-header">
+
+                <div>
+
+                    <label>
+                        Select Seats
+                    </label>
+
+                </div>
+
+                <button
+                    type="button"
+                    id="groupButton"
+                    class="group-button">
+
+                    <i class="fa-solid fa-users"></i>
+
+                    Select Group
+
+                </button>
+
+            </div>
+
+
+            <!-- =====================================
+                 GROUP BOOKING
+            ====================================== -->
+
+            <div
+                id="groupControls"
+                class="group-controls"
+                style="display: none;">
+
+                <label for="groupSize">
+                    Number of seats
+                </label>
+
+                <div class="group-row">
+
+                    <input
+                        type="number"
+                        id="groupSize"
+                        min="1"
+                        max="6"
+                        value="2">
+
+                    <button
+                        type="button"
+                        id="findGroupButton">
+
+                        <i class="fa-solid fa-magnifying-glass"></i>
+
+                        Find Seats
+
+                    </button>
+
+                </div>
+
+                <p>
+                    We'll find adjacent available seats for you.
+                </p>
+
+            </div>
+
+
+            <!-- =====================================
+                 SCREEN
+            ====================================== -->
+
+            <div class="screen-container">
+
+                <div class="screen">
+                    SCREEN
+                </div>
+
+            </div>
+
+
+            <!-- =====================================
+                 SEAT MAP
+            ====================================== -->
+
+            <div class="seat-map">
+
+
+                <!-- ROW A -->
+
+                <div class="seat-row">
+
+                    <span class="row-label">
+                        A
+                    </span>
+
+                    <button class="seat"
+                            data-seat="A1">
+                        A1
+                    </button>
+
+                    <button class="seat"
+                            data-seat="A2">
+                        A2
+                    </button>
+
+                    <button class="seat"
+                            data-seat="A3">
+                        A3
+                    </button>
+
+                    <button class="seat"
+                            data-seat="A4">
+                        A4
+                    </button>
+
+                    <button class="seat"
+                            data-seat="A5">
+                        A5
+                    </button>
+
+                    <button class="seat"
+                            data-seat="A6">
+                        A6
+                    </button>
+
+                </div>
+
+
+                <!-- ROW B -->
+
+                <div class="seat-row">
+
+                    <span class="row-label">
+                        B
+                    </span>
+
+                    <button class="seat"
+                            data-seat="B1">
+                        B1
+                    </button>
+
+                    <button class="seat"
+                            data-seat="B2">
+                        B2
+                    </button>
+
+                    <button class="seat"
+                            data-seat="B3">
+                        B3
+                    </button>
+
+                    <button class="seat"
+                            data-seat="B4">
+                        B4
+                    </button>
+
+                    <button class="seat"
+                            data-seat="B5">
+                        B5
+                    </button>
+
+                    <button class="seat"
+                            data-seat="B6">
+                        B6
+                    </button>
+
+                </div>
+
+
+                <!-- ROW C -->
+
+                <div class="seat-row">
+
+                    <span class="row-label">
+                        C
+                    </span>
+
+                    <button class="seat"
+                            data-seat="C1">
+                        C1
+                    </button>
+
+                    <button class="seat"
+                            data-seat="C2">
+                        C2
+                    </button>
+
+                    <button class="seat"
+                            data-seat="C3">
+                        C3
+                    </button>
+
+                    <button class="seat"
+                            data-seat="C4">
+                        C4
+                    </button>
+
+                    <button class="seat"
+                            data-seat="C5">
+                        C5
+                    </button>
+
+                    <button class="seat"
+                            data-seat="C6">
+                        C6
+                    </button>
+
+                </div>
+
+
+                <!-- ROW D -->
+
+                <div class="seat-row">
+
+                    <span class="row-label">
+                        D
+                    </span>
+
+                    <button class="seat"
+                            data-seat="D1">
+                        D1
+                    </button>
+
+                    <button class="seat"
+                            data-seat="D2">
+                        D2
+                    </button>
+
+                    <button class="seat"
+                            data-seat="D3">
+                        D3
+                    </button>
+
+                    <button class="seat"
+                            data-seat="D4">
+                        D4
+                    </button>
+
+                    <button class="seat"
+                            data-seat="D5">
+                        D5
+                    </button>
+
+                    <button class="seat"
+                            data-seat="D6">
+                        D6
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- =====================================
+                 LEGEND
+            ====================================== -->
+
+            <div class="legend">
+
+                <div class="legend-item">
+
+                    <span class="legend-box available"></span>
+
+                    Available
+
+                </div>
+
+                <div class="legend-item">
+
+                    <span class="legend-box selected"></span>
+
+                    Selected
+
+                </div>
+
+                <div class="legend-item">
+
+                    <span class="legend-box booked"></span>
+
+                    Booked
+
+                </div>
+
+            </div>
+
+
+            <!-- =====================================
+                 SELECTED SEATS
+            ====================================== -->
+
+            <div class="selected-info">
+
+                <div>
+
+                    <span>
+                        Selected Seats:
+                    </span>
+
+                    <strong id="selectedSeat">
+                        None
+                    </strong>
+
+                </div>
+
+                <div class="availability-info">
+
+                    <span>
+                        Available:
+                    </span>
+
+                    <strong id="availableSeatCount">
+                        24
+                    </strong>
+
+                </div>
+
+
+                <div>
+
+                    <span>
+                        Total Seats:
+                    </span>
+
+                    <strong id="seatCount">
+                        0
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <!-- =====================================
+                 CUSTOMER DETAILS
+            ====================================== -->
+
+            <div class="customer-section">
+
+                <div class="form-group">
+
+                    <label for="customer">
+                        Customer Name
+                    </label>
+
+                    <input
+                        type="text"
+                        id="customer"
+                        placeholder="Enter your name">
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="email">
+                        Email Address
+                    </label>
+
+                    <input
+                        type="email"
+                        id="email"
+                        placeholder="Enter your email">
+
+                </div>
+
+            </div>
+
+
+            <!-- =====================================
+                 BOOK BUTTON
+            ====================================== -->
+
+            <button
+                type="button"
+                id="bookButton"
+                class="book-button">
+
+                <i class="fa-solid fa-ticket"></i>
+
+                Book Selected Seats
+
+            </button>
+
+
+            <!-- =====================================
+                 MESSAGE
+            ====================================== -->
+
+            <div
+                id="message"
+                class="message">
+
+            </div>
+
+        </section>
+
+
+        <!-- =========================================
+             RIGHT SIDE - BOOKINGS
+        ========================================== -->
+
+        <section class="tickets-card">
+
+
+            <div class="tickets-header">
+
+                <div>
+
+                    <span class="eyebrow eyebrow-light">
+                        <i class="fa-solid fa-ticket"></i>
+                        Your watchlist
+                    </span>
+
+                    <h2>
+                        Booked Tickets
+                    </h2>
+
+                    <p>
+                        Manage your bookings
+                    </p>
+
+                </div>
+
+
+                <button
+                    type="button"
+                    id="refreshButton"
+                    class="refresh-button">
+
+                    <i class="fa-solid fa-rotate"></i>
+
+                    Refresh
+
+                </button>
+
+            </div>
+
+
+            <!-- =====================================
+                 BOOKINGS CONTAINER
+            ====================================== -->
+
+            <div
+                id="ticketsContainer"
+                class="tickets-container">
+
+                <p class="empty-message">
+                    No tickets booked yet.
+                </p>
+
+            </div>
+
+        </section>
+
+    </div>
+
+
+    <!-- =========================================
+         JAVASCRIPT
+    ========================================== -->
+
+    <script src="script.js"></script>
+
+</body>
+
+</html>

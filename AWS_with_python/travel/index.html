@@ -1,0 +1,2479 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>AI Travel Memory</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+
+            font-family:
+                Inter,
+                system-ui,
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                sans-serif;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #eef6ff,
+                    #f8fbff
+                );
+
+            color: #172033;
+
+            min-height: 100vh;
+
+        }
+
+
+        /* ==========================================
+           HEADER
+        ========================================== */
+
+        header {
+
+            background: #ffffff;
+
+            border-bottom:
+                1px solid #e5eaf2;
+
+            position: sticky;
+
+            top: 0;
+
+            z-index: 10;
+
+        }
+
+        .navbar {
+
+            max-width: 1180px;
+
+            margin: auto;
+
+            padding: 18px 24px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+        }
+
+        .brand {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 12px;
+
+        }
+
+        .brand-icon {
+
+            width: 44px;
+
+            height: 44px;
+
+            border-radius: 14px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            background: #e9f3ff;
+
+            font-size: 23px;
+
+        }
+
+        .brand h1 {
+
+            font-size: 20px;
+
+            font-weight: 750;
+
+        }
+
+        .brand p {
+
+            font-size: 12px;
+
+            color: #758096;
+
+            margin-top: 2px;
+
+        }
+
+
+        /* ==========================================
+           MAIN
+        ========================================== */
+
+        main {
+
+            max-width: 1180px;
+
+            margin: auto;
+
+            padding: 42px 24px 70px;
+
+        }
+
+
+        .hero {
+
+            text-align: center;
+
+            margin-bottom: 38px;
+
+        }
+
+        .hero h2 {
+
+            font-size: clamp(
+                30px,
+                5vw,
+                52px
+            );
+
+            line-height: 1.08;
+
+            letter-spacing: -1.5px;
+
+            margin-bottom: 14px;
+
+        }
+
+        .hero h2 span {
+
+            color: #2574e8;
+
+        }
+
+        .hero p {
+
+            max-width: 650px;
+
+            margin: auto;
+
+            color: #68758b;
+
+            font-size: 16px;
+
+            line-height: 1.7;
+
+        }
+
+
+        /* ==========================================
+           UPLOAD CARD
+        ========================================== */
+
+        .upload-card {
+
+            background: #ffffff;
+
+            border:
+                1px solid #e4eaf2;
+
+            border-radius: 24px;
+
+            padding: 28px;
+
+            box-shadow:
+                0 18px 50px
+                rgba(40, 70, 110, 0.08);
+
+            margin-bottom: 28px;
+
+        }
+
+        .drop-zone {
+
+            border:
+                2px dashed #cbd7e8;
+
+            border-radius: 20px;
+
+            padding: 48px 24px;
+
+            text-align: center;
+
+            cursor: pointer;
+
+            transition: 0.2s;
+
+            background: #fbfdff;
+
+        }
+
+        .drop-zone:hover {
+
+            border-color: #3a82ee;
+
+            background: #f5f9ff;
+
+        }
+
+        .drop-zone.dragging {
+
+            border-color: #2574e8;
+
+            background: #edf5ff;
+
+        }
+
+        .upload-icon {
+
+            width: 64px;
+
+            height: 64px;
+
+            margin:
+                0 auto 18px;
+
+            border-radius: 18px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            background: #eaf3ff;
+
+            font-size: 30px;
+
+        }
+
+        .drop-zone h3 {
+
+            font-size: 20px;
+
+            margin-bottom: 8px;
+
+        }
+
+        .drop-zone p {
+
+            color: #7b8799;
+
+            font-size: 14px;
+
+            margin-bottom: 20px;
+
+        }
+
+        .browse-btn {
+
+            display: inline-flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            padding: 12px 20px;
+
+            border-radius: 12px;
+
+            background: #2574e8;
+
+            color: white;
+
+            font-weight: 650;
+
+            font-size: 14px;
+
+        }
+
+        #fileInput {
+
+            display: none;
+
+        }
+
+
+        /* ==========================================
+           PREVIEW
+        ========================================== */
+
+        .preview-area {
+
+            display: none;
+
+            margin-top: 24px;
+
+            gap: 20px;
+
+            align-items: center;
+
+        }
+
+        .preview-area.show {
+
+            display: flex;
+
+        }
+
+        .preview-image {
+
+            width: 180px;
+
+            height: 130px;
+
+            object-fit: cover;
+
+            border-radius: 16px;
+
+            border:
+                1px solid #e2e8f0;
+
+        }
+
+        .preview-info {
+
+            flex: 1;
+
+        }
+
+        .preview-info h4 {
+
+            margin-bottom: 6px;
+
+        }
+
+        .preview-info p {
+
+            color: #718096;
+
+            font-size: 13px;
+
+            word-break: break-word;
+
+        }
+
+        .remove-btn {
+
+            margin-top: 12px;
+
+            border: none;
+
+            background: #fff0f0;
+
+            color: #d94848;
+
+            padding: 9px 13px;
+
+            border-radius: 9px;
+
+            cursor: pointer;
+
+            font-weight: 600;
+
+        }
+
+
+        /* ==========================================
+           ACTION BUTTON
+        ========================================== */
+
+        .process-btn {
+
+            width: 100%;
+
+            margin-top: 22px;
+
+            border: none;
+
+            border-radius: 14px;
+
+            padding: 16px;
+
+            background: #172033;
+
+            color: white;
+
+            font-size: 15px;
+
+            font-weight: 700;
+
+            cursor: pointer;
+
+            transition: 0.2s;
+
+        }
+
+        .process-btn:hover {
+
+            background: #27334a;
+
+            transform: translateY(-1px);
+
+        }
+
+        .process-btn:disabled {
+
+            opacity: 0.5;
+
+            cursor: not-allowed;
+
+            transform: none;
+
+        }
+
+
+        /* ==========================================
+           STATUS
+        ========================================== */
+
+        .status {
+
+            display: none;
+
+            margin-top: 22px;
+
+            padding: 15px 17px;
+
+            border-radius: 13px;
+
+            font-size: 14px;
+
+            line-height: 1.5;
+
+        }
+
+        .status.show {
+
+            display: block;
+
+        }
+
+        .status.info {
+
+            background: #eef6ff;
+
+            color: #2365b5;
+
+        }
+
+        .status.success {
+
+            background: #edf9f2;
+
+            color: #217346;
+
+        }
+
+        .status.error {
+
+            background: #fff1f1;
+
+            color: #b52d2d;
+
+        }
+
+
+        /* ==========================================
+           LOADING
+        ========================================== */
+
+        .loader {
+
+            width: 18px;
+
+            height: 18px;
+
+            border:
+                2px solid
+                rgba(255,255,255,.35);
+
+            border-top-color: white;
+
+            border-radius: 50%;
+
+            display: inline-block;
+
+            vertical-align: middle;
+
+            animation:
+                spin 0.8s linear infinite;
+
+            margin-right: 8px;
+
+        }
+
+        @keyframes spin {
+
+            to {
+                transform: rotate(360deg);
+            }
+
+        }
+
+
+        /* ==========================================
+           RESULT
+        ========================================== */
+
+        .result {
+
+            display: none;
+
+            margin-top: 28px;
+
+        }
+
+        .result.show {
+
+            display: block;
+
+        }
+
+        .section-title {
+
+            margin-bottom: 16px;
+
+        }
+
+        .section-title h2 {
+
+            font-size: 24px;
+
+        }
+
+        .section-title p {
+
+            color: #748096;
+
+            font-size: 14px;
+
+            margin-top: 5px;
+
+        }
+
+
+        .result-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                minmax(0, 1.35fr)
+                minmax(300px, .65fr);
+
+            gap: 22px;
+
+        }
+
+
+        .result-card {
+
+            background: white;
+
+            border:
+                1px solid #e4eaf2;
+
+            border-radius: 20px;
+
+            padding: 24px;
+
+            box-shadow:
+                0 12px 35px
+                rgba(40,70,110,.06);
+
+        }
+
+        .result-card h3 {
+
+            font-size: 17px;
+
+            margin-bottom: 16px;
+
+        }
+
+
+        /* ==========================================
+           ANALYSIS
+        ========================================== */
+
+        .analysis {
+
+            white-space: pre-wrap;
+
+            line-height: 1.75;
+
+            color: #4d596d;
+
+            font-size: 14px;
+
+        }
+
+
+        /* ==========================================
+           LABELS
+        ========================================== */
+
+        .labels {
+
+            display: flex;
+
+            flex-wrap: wrap;
+
+            gap: 8px;
+
+        }
+
+        .label {
+
+            background: #f1f5fa;
+
+            border:
+                1px solid #e2e8f0;
+
+            border-radius: 999px;
+
+            padding: 7px 10px;
+
+            font-size: 12px;
+
+            color: #465267;
+
+        }
+
+
+        /* ==========================================
+           AUDIO
+        ========================================== */
+
+        .audio-box {
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #f2f7ff,
+                    #f8fbff
+                );
+
+            border-radius: 16px;
+
+            padding: 18px;
+
+        }
+
+        .audio-box p {
+
+            color: #647188;
+
+            font-size: 13px;
+
+            margin-bottom: 12px;
+
+        }
+
+        audio {
+
+            width: 100%;
+
+        }
+
+
+        /* ==========================================
+           TRIP DETAILS
+        ========================================== */
+
+        .trip-details {
+
+            display: grid;
+
+            gap: 12px;
+
+        }
+
+        .detail {
+
+            padding: 13px;
+
+            background: #f8fafc;
+
+            border-radius: 12px;
+
+        }
+
+        .detail small {
+
+            display: block;
+
+            color: #8590a3;
+
+            margin-bottom: 4px;
+
+        }
+
+        .detail strong {
+
+            font-size: 13px;
+
+            word-break: break-word;
+
+        }
+
+
+        /* ==========================================
+           FOOTER
+        ========================================== */
+
+        footer {
+
+            text-align: center;
+
+            padding: 25px;
+
+            color: #8994a7;
+
+            font-size: 12px;
+
+        }
+
+
+
+        /* ==========================================
+           TRAVEL HISTORY
+        ========================================== */
+        .history-section {
+            margin-top: 52px;
+        }
+
+        .history-header {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 18px;
+        }
+
+        .history-count {
+            padding: 8px 11px;
+            border-radius: 999px;
+            background: #eef6ff;
+            color: #2365b5;
+            font-size: 12px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .history-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 18px;
+        }
+
+        .history-card {
+            overflow: hidden;
+            background: #fff;
+            border: 1px solid #e4eaf2;
+            border-radius: 20px;
+            box-shadow: 0 12px 35px rgba(40,70,110,.06);
+        }
+
+        .history-photo {
+            width: 100%;
+            height: 210px;
+            display: block;
+            object-fit: cover;
+            background: #f3f6fa;
+        }
+
+        .history-content {
+            padding: 18px;
+        }
+
+        .history-title {
+            font-size: 16px;
+            font-weight: 750;
+            line-height: 1.35;
+            margin-bottom: 7px;
+        }
+
+        .history-date {
+            color: #8490a3;
+            font-size: 12px;
+            margin-bottom: 13px;
+        }
+
+        .history-analysis {
+            color: #59667a;
+            font-size: 13px;
+            line-height: 1.6;
+            display: -webkit-box;
+            -webkit-line-clamp: 5;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .history-labels {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 14px;
+        }
+
+        .history-label {
+            padding: 5px 8px;
+            border-radius: 999px;
+            background: #f1f5fa;
+            border: 1px solid #e2e8f0;
+            color: #536075;
+            font-size: 11px;
+        }
+
+        .history-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 16px;
+        }
+
+        .history-audio {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .history-empty,
+        .history-loading {
+            padding: 30px 20px;
+            border: 1px dashed #cbd7e8;
+            border-radius: 18px;
+            background: #fbfdff;
+            color: #758096;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .refresh-btn {
+            border: 1px solid #dce4ef;
+            background: #fff;
+            color: #263249;
+            padding: 9px 13px;
+            border-radius: 10px;
+            font-weight: 650;
+            cursor: pointer;
+        }
+
+        .refresh-btn:hover {
+            background: #f7f9fc;
+        }
+
+        /* ==========================================
+           MOBILE
+        ========================================== */
+
+        @media (max-width: 800px) {
+
+            main {
+
+                padding:
+                    28px 16px 50px;
+
+            }
+
+            .navbar {
+
+                padding:
+                    14px 16px;
+
+            }
+
+            .upload-card {
+
+                padding: 18px;
+
+                border-radius: 18px;
+
+            }
+
+            .drop-zone {
+
+                padding:
+                    38px 16px;
+
+            }
+
+            .preview-area {
+
+                align-items: flex-start;
+
+            }
+
+            .preview-image {
+
+                width: 120px;
+
+                height: 100px;
+
+            }
+
+            .result-grid {
+
+                grid-template-columns: 1fr;
+
+            }
+
+            .history-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+        }
+
+
+        @media (max-width: 500px) {
+
+            .brand h1 {
+
+                font-size: 17px;
+
+            }
+
+            .brand p {
+
+                display: none;
+
+            }
+
+            .hero {
+
+                text-align: left;
+
+            }
+
+            .hero p {
+
+                font-size: 14px;
+
+            }
+
+            .preview-area {
+
+                flex-direction: column;
+
+            }
+
+            .preview-image {
+
+                width: 100%;
+
+                height: 200px;
+
+            }
+
+            .result-card {
+
+                padding: 18px;
+
+            }
+
+            .history-header {
+                align-items: flex-start;
+            }
+
+            .history-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .history-photo {
+                height: 220px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<header>
+
+    <div class="navbar">
+
+        <div class="brand">
+
+            <div class="brand-icon">
+                ✈️
+            </div>
+
+            <div>
+
+                <h1>
+                    AI Travel Memory
+                </h1>
+
+                <p>
+                    Turn your photos into stories
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</header>
+
+
+<main>
+
+
+    <!-- ==========================================
+         HERO
+    =========================================== -->
+
+    <section class="hero">
+
+        <h2>
+            Your journey,
+            <span>understood by AI.</span>
+        </h2>
+
+        <p>
+            Upload a travel photo and let AI
+            recognize what's inside, understand
+            the scene, create your travel story,
+            and turn it into spoken audio.
+        </p>
+
+    </section>
+
+
+    <!-- ==========================================
+         UPLOAD
+    =========================================== -->
+
+    <section class="upload-card">
+
+
+        <div
+            class="drop-zone"
+            id="dropZone"
+        >
+
+            <div class="upload-icon">
+                📸
+            </div>
+
+            <h3>
+                Add a travel memory
+            </h3>
+
+            <p>
+                JPG, PNG or WEBP ·
+                Choose a photo from your device
+            </p>
+
+            <span class="browse-btn">
+                Choose Photo
+            </span>
+
+            <input
+                type="file"
+                id="fileInput"
+                accept="image/jpeg,image/png,image/webp"
+            >
+
+        </div>
+
+
+        <!-- Preview -->
+
+        <div
+            class="preview-area"
+            id="previewArea"
+        >
+
+            <img
+                id="previewImage"
+                class="preview-image"
+                alt="Travel photo preview"
+            >
+
+            <div class="preview-info">
+
+                <h4 id="fileName">
+                    Photo
+                </h4>
+
+                <p id="fileSize">
+                    -
+                </p>
+
+                <button
+                    class="remove-btn"
+                    id="removeBtn"
+                >
+                    Remove photo
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <button
+            class="process-btn"
+            id="processBtn"
+            disabled
+        >
+
+            Analyze My Travel Photo
+
+        </button>
+
+
+        <div
+            class="status"
+            id="status"
+        ></div>
+
+
+    </section>
+
+
+    <!-- ==========================================
+         RESULT
+    =========================================== -->
+
+    <section
+        class="result"
+        id="result"
+    >
+
+        <div class="section-title">
+
+            <h2>
+                Your travel memory
+            </h2>
+
+            <p>
+                AI has finished analyzing your photo.
+            </p>
+
+        </div>
+
+
+        <div class="result-grid">
+
+
+            <!-- LEFT -->
+
+            <div>
+
+
+                <!-- Gemini -->
+
+                <div class="result-card">
+
+                    <h3>
+                        ✨ AI Travel Story
+                    </h3>
+
+                    <div
+                        class="analysis"
+                        id="analysis"
+                    ></div>
+
+                </div>
+
+
+                <br>
+
+
+                <!-- Audio -->
+
+                <div class="result-card">
+
+                    <h3>
+                        🔊 Listen to your memory
+                    </h3>
+
+                    <div class="audio-box">
+
+                        <p>
+                            Your AI-generated travel story
+                        </p>
+
+                        <audio
+                            id="audioPlayer"
+                            controls
+                        >
+                        </audio>
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+
+            <!-- RIGHT -->
+
+            <div>
+
+
+                <!-- Rekognition -->
+
+                <div class="result-card">
+
+                    <h3>
+                        👁️ What AI detected
+                    </h3>
+
+                    <div
+                        class="labels"
+                        id="labels"
+                    ></div>
+
+                </div>
+
+
+                <br>
+
+
+                <!-- Trip details -->
+
+                <div class="result-card">
+
+                    <h3>
+                        🧳 Trip details
+                    </h3>
+
+                    <div class="trip-details">
+
+                        <div class="detail">
+
+                            <small>
+                                Trip ID
+                            </small>
+
+                            <strong id="tripId">
+                                -
+                            </strong>
+
+                        </div>
+
+
+                        <div class="detail">
+
+                            <small>
+                                Photo
+                            </small>
+
+                            <strong id="photoKey">
+                                -
+                            </strong>
+
+                        </div>
+
+
+                        <div class="detail">
+
+                            <small>
+                                Created
+                            </small>
+
+                            <strong id="createdAt">
+                                -
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+    </section>
+
+
+    <!-- ==========================================
+         TRAVEL HISTORY
+    =========================================== -->
+
+    <section class="history-section">
+
+        <div class="history-header">
+
+            <div class="section-title">
+                <h2>Your travel history</h2>
+                <p>Every processed memory saved in your trip journal.</p>
+            </div>
+
+            <button class="refresh-btn" id="refreshHistoryBtn" type="button">
+                ↻ Refresh
+            </button>
+
+        </div>
+
+        <div class="history-grid" id="historyGrid">
+            <div class="history-loading">
+                Loading your travel memories...
+            </div>
+        </div>
+
+    </section>
+
+</main>
+
+
+<footer>
+
+    AI Travel Memory ·
+    S3 · Rekognition · Gemini ·
+    DynamoDB · Polly · SNS
+
+</footer>
+
+
+<script>
+
+
+    // ======================================================
+    // API CONFIGURATION
+    // ======================================================
+
+    const API_BASE_URL =
+        "https://5wr5nr0wre.execute-api.ap-south-1.amazonaws.com";
+
+
+    const TRIP_ID =
+        "TRIP001";
+
+
+    // ======================================================
+    // ELEMENTS
+    // ======================================================
+
+    const fileInput =
+        document.getElementById("fileInput");
+
+    const dropZone =
+        document.getElementById("dropZone");
+
+    const previewArea =
+        document.getElementById("previewArea");
+
+    const previewImage =
+        document.getElementById("previewImage");
+
+    const fileName =
+        document.getElementById("fileName");
+
+    const fileSize =
+        document.getElementById("fileSize");
+
+    const removeBtn =
+        document.getElementById("removeBtn");
+
+    const processBtn =
+        document.getElementById("processBtn");
+
+    const statusBox =
+        document.getElementById("status");
+
+    const result =
+        document.getElementById("result");
+
+    const analysis =
+        document.getElementById("analysis");
+
+    const labels =
+        document.getElementById("labels");
+
+    const audioPlayer =
+        document.getElementById("audioPlayer");
+
+    const tripId =
+        document.getElementById("tripId");
+
+    const photoKey =
+        document.getElementById("photoKey");
+
+    const createdAt =
+        document.getElementById("createdAt");
+
+    const historyGrid =
+        document.getElementById("historyGrid");
+
+    const refreshHistoryBtn =
+        document.getElementById("refreshHistoryBtn");
+
+
+    let selectedFile = null;
+
+
+    // ======================================================
+    // FILE SELECTION
+    // ======================================================
+
+    dropZone.addEventListener(
+        "click",
+        () => fileInput.click()
+    );
+
+
+    fileInput.addEventListener(
+        "change",
+        () => {
+
+            if (
+                fileInput.files &&
+                fileInput.files.length
+            ) {
+
+                selectFile(
+                    fileInput.files[0]
+                );
+
+            }
+
+        }
+    );
+
+
+    // ======================================================
+    // DRAG & DROP
+    // ======================================================
+
+    dropZone.addEventListener(
+        "dragover",
+        event => {
+
+            event.preventDefault();
+
+            dropZone.classList.add(
+                "dragging"
+            );
+
+        }
+    );
+
+
+    dropZone.addEventListener(
+        "dragleave",
+        () => {
+
+            dropZone.classList.remove(
+                "dragging"
+            );
+
+        }
+    );
+
+
+    dropZone.addEventListener(
+        "drop",
+        event => {
+
+            event.preventDefault();
+
+            dropZone.classList.remove(
+                "dragging"
+            );
+
+
+            const files =
+                event.dataTransfer.files;
+
+
+            if (
+                files &&
+                files.length
+            ) {
+
+                selectFile(
+                    files[0]
+                );
+
+            }
+
+        }
+    );
+
+
+    // ======================================================
+    // SELECT FILE
+    // ======================================================
+
+    function selectFile(file) {
+
+
+        if (
+            !file.type.startsWith(
+                "image/"
+            )
+        ) {
+
+            showStatus(
+                "Please select an image file.",
+                "error"
+            );
+
+            return;
+
+        }
+
+
+        selectedFile = file;
+
+
+        previewImage.src =
+            URL.createObjectURL(file);
+
+
+        fileName.textContent =
+            file.name;
+
+
+        fileSize.textContent =
+            formatFileSize(
+                file.size
+            );
+
+
+        previewArea.classList.add(
+            "show"
+        );
+
+
+        processBtn.disabled =
+            false;
+
+
+        result.classList.remove(
+            "show"
+        );
+
+
+        statusBox.classList.remove(
+            "show"
+        );
+
+    }
+
+
+    // ======================================================
+    // REMOVE FILE
+    // ======================================================
+
+    removeBtn.addEventListener(
+        "click",
+        () => {
+
+            selectedFile = null;
+
+            fileInput.value = "";
+
+            previewArea.classList.remove(
+                "show"
+            );
+
+            processBtn.disabled =
+                true;
+
+            result.classList.remove(
+                "show"
+            );
+
+        }
+    );
+
+
+    // ======================================================
+    // PROCESS BUTTON
+    // ======================================================
+
+    processBtn.addEventListener(
+        "click",
+        processTravelPhoto
+    );
+
+
+    // ======================================================
+    // MAIN PROCESS
+    // ======================================================
+
+    async function processTravelPhoto() {
+
+
+        if (!selectedFile) {
+
+            return;
+
+        }
+
+
+        processBtn.disabled =
+            true;
+
+
+        result.classList.remove(
+            "show"
+        );
+
+
+        try {
+
+
+            // =================================================
+            // STEP 1
+            // GET PRESIGNED URL
+            // =================================================
+
+            showStatus(
+                "Preparing your photo...",
+                "info"
+            );
+
+
+            const uploadResponse =
+                await fetch(
+                    `${API_BASE_URL}/upload`,
+                    {
+
+                        method: "POST",
+
+                        headers: {
+
+                            "Content-Type":
+                                "application/json"
+
+                        },
+
+                        body: JSON.stringify({
+
+                            filename:
+                                selectedFile.name,
+
+                            contentType:
+                                selectedFile.type
+
+                        })
+
+                    }
+                );
+
+
+            if (!uploadResponse.ok) {
+
+                throw new Error(
+                    "Could not prepare upload."
+                );
+
+            }
+
+
+            const uploadData =
+                await uploadResponse.json();
+
+
+            console.log(
+                "Upload API:",
+                uploadData
+            );
+
+
+            // =================================================
+            // STEP 2
+            // UPLOAD DIRECTLY TO S3
+            // =================================================
+
+            showStatus(
+                "Uploading your travel photo...",
+                "info"
+            );
+
+
+            const s3Response =
+                await fetch(
+                    uploadData.uploadUrl,
+                    {
+
+                        method: "PUT",
+
+                        headers: {
+
+                            "Content-Type":
+                                selectedFile.type
+
+                        },
+
+                        body:
+                            selectedFile
+
+                    }
+                );
+
+
+            if (!s3Response.ok) {
+
+                throw new Error(
+                    "Photo upload to S3 failed."
+                );
+
+            }
+
+
+            // =================================================
+            // STEP 3
+            // WAIT FOR AI
+            // =================================================
+
+            showStatus(
+                "Photo uploaded. AI is analyzing it...",
+                "info"
+            );
+
+
+            const data =
+                await waitForProcessing(
+                    uploadData.key
+                );
+
+
+            // =================================================
+            // STEP 4
+            // DISPLAY RESULT
+            // =================================================
+
+            displayResult(
+                data
+            );
+
+
+            showStatus(
+                "Your travel memory is ready!",
+                "success"
+            );
+
+            // Refresh history after a new memory is processed.
+            loadHistory();
+
+
+        } catch (error) {
+
+
+            console.error(
+                error
+            );
+
+
+            showStatus(
+                error.message ||
+                "Something went wrong.",
+                "error"
+            );
+
+
+        } finally {
+
+            processBtn.disabled =
+                false;
+
+        }
+
+    }
+
+
+    // ======================================================
+    // POLL DYNAMODB THROUGH API
+    // ======================================================
+
+    async function waitForProcessing(
+        expectedPhoto
+    ) {
+
+
+        const maxAttempts =
+            40;
+
+
+        for (
+            let attempt = 0;
+            attempt < maxAttempts;
+            attempt++
+        ) {
+
+
+            console.log(
+                `Checking result ${attempt + 1}/${maxAttempts}`
+            );
+
+
+            await sleep(
+                3000
+            );
+
+
+            const response =
+                await fetch(
+                    `${API_BASE_URL}/trip/${TRIP_ID}`
+                );
+
+
+            if (!response.ok) {
+
+                continue;
+
+            }
+
+
+            const data =
+                await response.json();
+
+
+            console.log(
+                "Trip API:",
+                data
+            );
+
+
+            /*
+             * Make sure the result belongs
+             * to the photo we just uploaded.
+             */
+
+            if (
+                data.photo ===
+                expectedPhoto
+            ) {
+
+
+                if (
+                    data.audioUrl ||
+                    data.audioKey
+                ) {
+
+                    return data;
+
+                }
+
+            }
+
+        }
+
+
+        throw new Error(
+            "AI processing is taking longer than expected. Please try again."
+        );
+
+    }
+
+
+    // ======================================================
+    // DISPLAY RESULT
+    // ======================================================
+
+    function displayResult(data) {
+
+
+        // --------------------------------------------------
+        // Analysis
+        // --------------------------------------------------
+
+        analysis.textContent =
+            data.geminiAnalysis ||
+            data.gemini ||
+            "No AI analysis available.";
+
+
+        // --------------------------------------------------
+        // Labels
+        // --------------------------------------------------
+
+        labels.innerHTML = "";
+
+
+        const detectedLabels =
+            data.rekognition || [];
+
+
+        if (
+            detectedLabels.length === 0
+        ) {
+
+            labels.innerHTML =
+                `<span class="label">
+                    No labels detected
+                </span>`;
+
+        } else {
+
+
+            detectedLabels.forEach(
+                item => {
+
+
+                    const name =
+                        item.name ||
+                        item.Name ||
+                        "Object";
+
+
+                    const confidence =
+                        Number(
+                            item.confidence ||
+                            item.Confidence ||
+                            0
+                        );
+
+
+                    const element =
+                        document.createElement(
+                            "span"
+                        );
+
+
+                    element.className =
+                        "label";
+
+
+                    element.textContent =
+                        `${name} ${confidence.toFixed(0)}%`;
+
+
+                    labels.appendChild(
+                        element
+                    );
+
+                }
+            );
+
+        }
+
+
+        // --------------------------------------------------
+        // Audio
+        // --------------------------------------------------
+
+        const audioUrl =
+            data.audioUrl;
+
+
+        if (audioUrl) {
+
+            audioPlayer.src =
+                audioUrl;
+
+            audioPlayer.style.display =
+                "block";
+
+        } else {
+
+            audioPlayer.removeAttribute(
+                "src"
+            );
+
+            audioPlayer.style.display =
+                "none";
+
+        }
+
+
+        // --------------------------------------------------
+        // Trip details
+        // --------------------------------------------------
+
+        tripId.textContent =
+            data.tripId ||
+            TRIP_ID;
+
+
+        photoKey.textContent =
+            data.photo ||
+            "-";
+
+
+        createdAt.textContent =
+            formatDate(
+                data.createdAt
+            );
+
+
+        // --------------------------------------------------
+        // Show result
+        // --------------------------------------------------
+
+        result.classList.add(
+            "show"
+        );
+
+
+        // Scroll
+        setTimeout(
+            () => {
+
+                result.scrollIntoView({
+
+                    behavior: "smooth",
+
+                    block: "start"
+
+                });
+
+            },
+            100
+        );
+
+    }
+
+
+
+    // ======================================================
+    // TRAVEL HISTORY
+    // ======================================================
+
+    refreshHistoryBtn.addEventListener(
+        "click",
+        loadHistory
+    );
+
+
+    async function loadHistory() {
+
+        historyGrid.innerHTML = `
+            <div class="history-loading">
+                Loading your travel memories...
+            </div>
+        `;
+
+        try {
+
+            const response = await fetch(
+                `${API_BASE_URL}/trips`
+            );
+
+            if (!response.ok) {
+                throw new Error(
+                    "Could not load travel history."
+                );
+            }
+
+            const data = await response.json();
+
+            renderHistory(
+                data.trips || []
+            );
+
+        } catch (error) {
+
+            console.error(
+                "History error:",
+                error
+            );
+
+            historyGrid.innerHTML = `
+                <div class="history-empty">
+                    Unable to load history right now.
+                    <br>
+                    <button
+                        class="refresh-btn"
+                        style="margin-top:12px"
+                        onclick="loadHistory()"
+                    >
+                        Try again
+                    </button>
+                </div>
+            `;
+
+        }
+
+    }
+
+
+    function renderHistory(trips) {
+
+        if (!trips.length) {
+
+            historyGrid.innerHTML = `
+                <div class="history-empty">
+                    <strong>No travel memories yet.</strong>
+                    <br>
+                    Upload your first travel photo above.
+                </div>
+            `;
+
+            return;
+        }
+
+
+        historyGrid.innerHTML = "";
+
+
+        trips.forEach(
+            trip => {
+
+                const card =
+                    document.createElement("article");
+
+                card.className =
+                    "history-card";
+
+
+                const image =
+                    document.createElement("img");
+
+                image.className =
+                    "history-photo";
+
+                image.alt =
+                    "Travel memory";
+
+
+                // photoUrl is generated by Lambda
+                // because the S3 bucket is private.
+                if (trip.photoUrl) {
+
+                    image.src =
+                        trip.photoUrl;
+
+                } else {
+
+                    image.alt =
+                        "Photo preview unavailable";
+
+                    image.style.display =
+                        "none";
+
+                }
+
+
+                const content =
+                    document.createElement("div");
+
+                content.className =
+                    "history-content";
+
+
+                const title =
+                    extractTitle(
+                        trip.geminiAnalysis
+                    );
+
+
+                const titleElement =
+                    document.createElement("div");
+
+                titleElement.className =
+                    "history-title";
+
+                titleElement.textContent =
+                    title;
+
+
+                const date =
+                    document.createElement("div");
+
+                date.className =
+                    "history-date";
+
+                date.textContent =
+                    formatDate(
+                        trip.createdAt
+                    );
+
+
+                const analysis =
+                    document.createElement("div");
+
+                analysis.className =
+                    "history-analysis";
+
+                analysis.textContent =
+                    trip.geminiAnalysis ||
+                    "No AI analysis available.";
+
+
+                const labelsWrap =
+                    document.createElement("div");
+
+                labelsWrap.className =
+                    "history-labels";
+
+
+                (
+                    trip.rekognition || []
+                )
+                .slice(0, 5)
+                .forEach(
+                    item => {
+
+                        const label =
+                            document.createElement("span");
+
+                        label.className =
+                            "history-label";
+
+                        const name =
+                            item.name ||
+                            item.Name ||
+                            "Object";
+
+                        const confidence =
+                            Number(
+                                item.confidence ||
+                                item.Confidence ||
+                                0
+                            );
+
+                        label.textContent =
+                            confidence
+                                ? `${name} ${confidence.toFixed(0)}%`
+                                : name;
+
+                        labelsWrap.appendChild(
+                            label
+                        );
+
+                    }
+                );
+
+
+                content.appendChild(
+                    titleElement
+                );
+
+                content.appendChild(
+                    date
+                );
+
+                content.appendChild(
+                    analysis
+                );
+
+                if (labelsWrap.children.length) {
+                    content.appendChild(
+                        labelsWrap
+                    );
+                }
+
+
+                if (trip.audioUrl) {
+
+                    const audio =
+                        document.createElement("audio");
+
+                    audio.className =
+                        "history-audio";
+
+                    audio.controls =
+                        true;
+
+                    audio.preload =
+                        "none";
+
+                    audio.src =
+                        trip.audioUrl;
+
+                    content.appendChild(
+                        audio
+                    );
+
+                }
+
+
+                card.appendChild(
+                    image
+                );
+
+                card.appendChild(
+                    content
+                );
+
+                historyGrid.appendChild(
+                    card
+                );
+
+            }
+        );
+
+    }
+
+
+    function extractTitle(text) {
+
+        if (!text) {
+            return "Travel memory";
+        }
+
+        const match =
+            text.match(
+                /TITLE:\s*([\s\S]*?)(?:\n\s*\n|\nDESCRIPTION:|$)/i
+            );
+
+        if (match && match[1]) {
+
+            return match[1]
+                .trim()
+                .replace(/\n/g, " ")
+                .slice(0, 90);
+
+        }
+
+        return "Travel memory";
+
+    }
+
+
+    // Load history when the page opens.
+    loadHistory();
+
+
+    // ======================================================
+    // STATUS
+    // ======================================================
+
+    function showStatus(
+        message,
+        type
+    ) {
+
+        statusBox.textContent =
+            message;
+
+        statusBox.className =
+            `status show ${type}`;
+
+    }
+
+
+    // ======================================================
+    // FILE SIZE
+    // ======================================================
+
+    function formatFileSize(
+        bytes
+    ) {
+
+        if (
+            bytes === 0
+        ) {
+
+            return "0 Bytes";
+
+        }
+
+
+        const units = [
+            "Bytes",
+            "KB",
+            "MB",
+            "GB"
+        ];
+
+
+        const index =
+            Math.floor(
+                Math.log(bytes) /
+                Math.log(1024)
+            );
+
+
+        return (
+            parseFloat(
+                (
+                    bytes /
+                    Math.pow(
+                        1024,
+                        index
+                    )
+                ).toFixed(2)
+            )
+            + " "
+            + units[index]
+        );
+
+    }
+
+
+    // ======================================================
+    // DATE
+    // ======================================================
+
+    function formatDate(
+        value
+    ) {
+
+        if (!value) {
+
+            return "-";
+
+        }
+
+
+        try {
+
+            return new Date(
+                value
+            ).toLocaleString();
+
+        } catch {
+
+            return value;
+
+        }
+
+    }
+
+
+    // ======================================================
+    // SLEEP
+    // ======================================================
+
+    function sleep(
+        milliseconds
+    ) {
+
+        return new Promise(
+            resolve =>
+                setTimeout(
+                    resolve,
+                    milliseconds
+                )
+        );
+
+    }
+
+
+</script>
+
+
+</body>
+
+</html>

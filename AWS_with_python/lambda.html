@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+```
+<!-- Makes the page responsive on mobile -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Selfie Upload</title>
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f2f2f2;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        margin: 0;
+    }
+
+    .container {
+        background-color: white;
+        width: 90%;
+        max-width: 450px;
+        padding: 30px;
+        border-radius: 10px;
+        text-align: center;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+    }
+
+    h1 {
+        margin-bottom: 10px;
+    }
+
+    p {
+        color: #555;
+    }
+
+    input {
+        margin: 20px 0;
+    }
+
+    #preview {
+        display: none;
+        width: 250px;
+        max-width: 100%;
+        margin: 15px auto;
+        border-radius: 10px;
+    }
+
+    button {
+        padding: 12px 25px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+    }
+
+    button:hover {
+        background-color: #0056b3;
+    }
+
+    button:disabled {
+        background-color: #999;
+        cursor: not-allowed;
+    }
+
+    #message {
+        margin-top: 20px;
+        font-weight: bold;
+        white-space: pre-line;
+    }
+</style>
+```
+
+</head>
+
+<body>
+
+
+<div class="container">
+
+    <h1>Selfie Upload</h1>
+
+    <p>Select a selfie smaller than 5 MB</p>
+
+    <!-- Image selection -->
+    <input
+        type="file"
+        id="imageInput"
+        accept="image/jpeg, image/png, image/webp"
+    >
+
+    <!-- Image preview -->
+    <img
+        id="preview"
+        alt="Selected selfie"
+    >
+
+    <br>
+
+    <!-- Upload button -->
+    <button id="uploadBtn">
+        Upload Selfie
+    </button>
+
+    <!-- Success/Error message -->
+    <div id="message"></div>
+
+</div>
+
+
+<script>
+
+    // =========================================
+    // Configuration
+    // =========================================
+
+    const LAMBDA_URL =
+        "https://guguhzn2jzuvf75hgssiwblbbq0izqvq.lambda-url.ap-south-1.on.aws/";
+
+    // Maximum allowed size = 5 MB
+    const MAX_SIZE = 5 * 1024 * 1024;
+
+    // Allowed image types
+    const ALLOWED_TYPES = [
+        "image/jpeg",
+        "image/png",
+        "image/webp"
+    ];
+
+
+    // =========================================
+    // Get HTML elements
+    // =========================================
+
+    const imageInput = document.getElementById("imageInput");
+    const preview = document.getElementById("preview");
+    const uploadBtn = document.getElementById("uploadBtn");
+    const message = document.getElementById("message");
+
+
+    // =========================================
+    // When user selects an image
+    // =========================================
+
+    imageInput.addEventListener("change", function () {
+
+        const file = imageInput.files[0];
+
+        // No file selected
+        if (!file) {
+            preview.style.display = "none";
+            message.textContent = "";
+            return;
+        }
+
+
+        // -----------------------------------------
+        // Check image size
+        // -----------------------------------------
+
+        if (file.size > MAX_SIZE) {
+
+            message.textContent =
+                "❌ Image must be smaller than 5 MB.";
+
+            imageInput.value = "";
+
+            preview.style.display = "none";
+
+            return;
+        }
+
+
+        // -----------------------------------------
+        // Check image type
+        // -----------------------------------------
+
+        if (!ALLOWED_TYPES.includes(file.type)) {
+
+            message.textContent =
+                "❌ Only JPG, PNG and WEBP images are allowed.";
+
+            imageInput.value = "";
+
+            preview.style.display = "none";
+
+            return;
+        }
+
+
+        // -----------------------------------------
+        // Show image preview
+        // -----------------------------------------
+
+        const imageURL = URL.createObjectURL(file);
+
+        preview.src = imageURL;
+
+        preview.style.display = "block";
+
+        message.textContent =
+            "✅ Image selected successfully.";
+
+    });
+
+
+    // =========================================
+    // Upload button
+    // =========================================
+
+    uploadBtn.addEventListener("click", async function () {
+
+        const file = imageInput.files[0];
+
+
+        // -----------------------------------------
+        // Check if image was selected
+        // -----------------------------------------
+
+        if (!file) {
+
+            message.textContent =
+                "❌ Please select a selfie first.";
+
+            return;
+        }
+
+
+        // -----------------------------------------
+        // Check image size again
+        // -----------------------------------------
+
+        if (file.size > MAX_SIZE) {
+
+            message.textContent =
+                "❌ Image must be smaller than 5 MB.";
+
+            return;
+        }
+
+
+        // -----------------------------------------
+        // Check image type again
+        // -----------------------------------------
+
+        if (!ALLOWED_TYPES.includes(file.type)) {
+
+            message.textContent =
+                "❌ Only JPG, PNG and WEBP images are allowed.";
+
+            return;
+        }
+
+
+        // -----------------------------------------
+        // Disable button
+        // -----------------------------------------
+
+        uploadBtn.disabled = true;
+
+        uploadBtn.textContent = "Uploading...";
+
+        message.textContent =
+            "⏳ Uploading your selfie...";
+
+
+        try {
+
+            // =========================================
+            // Send image to Lambda Function URL
+            // =========================================
+
+            const response = await fetch(
+                LAMBDA_URL,
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type": file.type
+                    },
+
+                    // Send actual image binary
+                    body: file
+                }
+            );
+
+
+            // =========================================
+            // Read Lambda response
+            // =========================================
+
+            const result = await response.json();
+
+            console.log("Lambda response:", result);
+
+
+            // =========================================
+            // Successful upload
+            // =========================================
+
+            if (response.ok) {
+
+                message.textContent =
+                    "✅ " + result.message +
+                    "\nFile: " + result.filename;
+
+                // Clear file input
+                imageInput.value = "";
+
+            }
+
+
+            // =========================================
+            // Lambda returned an error
+            // =========================================
+
+            else {
+
+                message.textContent =
+                    "❌ " +
+                    (result.error || "Upload failed.");
+
+            }
+
+
+        } catch (error) {
+
+            // =========================================
+            // Network / CORS / connection error
+            // =========================================
+
+            console.error("Upload error:", error);
+
+            message.textContent =
+                "❌ Unable to connect to Lambda.";
+
+        }
+
+
+        // =========================================
+        // Enable button again
+        // =========================================
+
+        uploadBtn.disabled = false;
+
+        uploadBtn.textContent = "Upload Selfie";
+
+    });
+
+</script>
+
+</body>
+
+</html>

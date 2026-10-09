@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Story to Speech - Community</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap');
+
+        :root {
+            --ink: #1f2933;
+            --muted: #718096;
+            --paper: #fffdf9;
+            --canvas: #f5f1ea;
+            --line: #e9e1d5;
+            --coral: #d7684e;
+            --coral-dark: #b94f39;
+            --sage: #58776c;
+            --shadow: 0 24px 60px rgba(74, 56, 39, .10);
+        }
+
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: 'DM Sans', sans-serif;
+            background:
+                radial-gradient(circle at 8% 5%, rgba(215, 104, 78, .13), transparent 24rem),
+                radial-gradient(circle at 96% 38%, rgba(88, 119, 108, .12), transparent 23rem),
+                var(--canvas);
+            padding: 48px 24px 64px;
+            color: var(--ink);
+        }
+        .container {
+            width: 100%;
+            max-width: 1040px;
+            margin: 0 auto;
+        }
+        .card {
+            background: rgba(255, 253, 249, .94);
+            padding: clamp(24px, 5vw, 48px);
+            border: 1px solid rgba(233, 225, 213, .9);
+            border-radius: 24px;
+            box-shadow: var(--shadow);
+            margin-bottom: 28px;
+        }
+        h1, h2, h3 { font-family: 'Playfair Display', Georgia, serif; color: var(--ink); }
+        h1 { margin: 0 0 10px; text-align: center; font-size: clamp(2.2rem, 5vw, 3.55rem); letter-spacing: -.03em; }
+        h2 { margin: 0; font-size: clamp(1.55rem, 3vw, 2.1rem); letter-spacing: -.02em; }
+        h3 { font-size: 1.3rem; }
+        .subtitle { max-width: 510px; text-align: center; color: var(--muted); margin: 0 auto 34px; line-height: 1.6; }
+        label { display: block; font-size: 12px; letter-spacing: .12em; text-transform: uppercase; font-weight: 700; color: var(--sage); margin-bottom: 10px; }
+        textarea {
+            width: 100%; min-height: 240px; resize: vertical;
+            padding: 20px; border: 1px solid var(--line); border-radius: 14px;
+            background: #fffefa; color: var(--ink); font: inherit; font-size: 16px; line-height: 1.7; outline: none;
+            transition: border-color .2s ease, box-shadow .2s ease;
+        }
+        textarea::placeholder { color: #a8a197; }
+        textarea:focus { border-color: var(--coral); box-shadow: 0 0 0 4px rgba(215, 104, 78, .12); }
+        button {
+            width: 100%; margin-top: 18px; padding: 15px 20px;
+            border: none; border-radius: 12px; font: inherit; font-size: 15px;
+            font-weight: 700; cursor: pointer; transition: transform .2s ease, background .2s ease, box-shadow .2s ease;
+            background: var(--coral); color: #fffaf5;
+            box-shadow: 0 10px 20px rgba(215, 104, 78, .2);
+        }
+        button:hover:not(:disabled) { background: var(--coral-dark); transform: translateY(-1px); box-shadow: 0 13px 24px rgba(215, 104, 78, .25); }
+        button:disabled { opacity: .6; cursor: not-allowed; }
+        #status { margin-top: 18px; text-align: center; min-height: 24px; color: var(--muted); font-size: 14px; }
+        #result {
+            margin-top: 24px; padding: 22px; border: 1px solid #dce8e2; border-radius: 16px;
+            background: #f1f7f3; display: none;
+        }
+        #result h3 { margin: 0 0 8px; }
+        audio { width: 100%; margin-top: 12px; accent-color: var(--sage); }
+        .meta { color: var(--muted); font-size: 14px; margin: 8px 0; }
+        .s3-key { word-break: break-all; font-size: 12px; color: #87968f; margin-bottom: 0; }
+        .community-header {
+            display: flex; justify-content: space-between; align-items: center;
+            gap: 15px; margin-bottom: 24px;
+        }
+        .refresh-btn {
+            width: auto; margin: 0; padding: 10px 16px; font-size: 13px;
+            background: transparent; color: var(--sage); border: 1px solid #cbd9d2; box-shadow: none;
+        }
+        .refresh-btn:hover:not(:disabled) { background: #eaf1ed; color: var(--sage); box-shadow: none; }
+        #communityStatus { color: var(--muted); margin-top: 7px; margin-bottom: 0; font-size: 14px; }
+        .story-list { display: grid; gap: 16px; }
+        .story-card {
+            border: 1px solid var(--line); border-radius: 16px;
+            padding: 24px; background: #fffefa;
+            transition: border-color .2s ease, transform .2s ease, box-shadow .2s ease;
+        }
+        .story-card:hover { border-color: #d9c9b8; transform: translateY(-2px); box-shadow: 0 12px 24px rgba(74, 56, 39, .07); }
+        .story-card h3 { margin: 0 0 12px; }
+        .story-text {
+            white-space: pre-wrap; line-height: 1.7; color: #52605d;
+            max-height: 180px; overflow-y: auto; margin-bottom: 16px;
+        }
+        .badges { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+        .badge {
+            background: #f5eee5; border-radius: 20px; padding: 6px 10px;
+            font-size: 12px; color: #74685d;
+        }
+        .play-btn {
+            width: auto; margin: 0; padding: 10px 16px;
+            font-size: 13px; background: var(--sage); color: white; box-shadow: 0 8px 16px rgba(88, 119, 108, .18);
+        }
+        .empty { text-align: center; color: var(--muted); padding: 34px 25px; border: 1px dashed #d9cfc2; border-radius: 14px; }
+        @media (max-width: 600px) {
+            body { padding: 20px 14px 40px; }
+            .card { padding: 24px 18px; border-radius: 18px; }
+            .community-header { align-items: flex-start; flex-direction: column; }
+            .refresh-btn { width: 100%; }
+            .story-card { padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <div class="card">
+        <h1>📖 Story to Speech</h1>
+        <p class="subtitle">Write a story and let Amazon Polly read it automatically.</p>
+
+        <label for="storyText">Enter Your Story</label>
+        <textarea id="storyText" placeholder="Write or paste your story here... Hindi or English is supported."></textarea>
+
+        <button id="convertButton" onclick="convertStoryToSpeech()">🔊 Convert to Speech</button>
+        <div id="status"></div>
+
+        <div id="result">
+            <h3>🎧 Audio Generated</h3>
+            <p>Your story has been converted to speech.</p>
+            <p class="meta"><strong>Language:</strong> <span id="detectedLanguage"></span></p>
+            <p class="meta"><strong>Voice:</strong> <span id="selectedVoice"></span></p>
+            <audio id="audioPlayer" controls></audio>
+            <p class="s3-key"><strong>S3 File:</strong> <span id="s3Key"></span></p>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="community-header">
+            <div>
+                <h2>🌍 Community Stories</h2>
+                <div id="communityStatus">Loading stories...</div>
+            </div>
+            <button class="refresh-btn" onclick="loadCommunityStories()">↻ Refresh</button>
+        </div>
+
+        <div id="storyList" class="story-list"></div>
+    </div>
+
+</div>
+
+<script>
+    const SYNTHESIZE_API =
+        "https://2d3mayvqzi.execute-api.ap-south-1.amazonaws.com/synthesize";
+
+    const STORIES_API =
+        "https://2d3mayvqzi.execute-api.ap-south-1.amazonaws.com/stories";
+
+    async function convertStoryToSpeech() {
+        const text = document.getElementById("storyText").value.trim();
+        const button = document.getElementById("convertButton");
+        const status = document.getElementById("status");
+        const result = document.getElementById("result");
+        const audioPlayer = document.getElementById("audioPlayer");
+
+        if (!text) {
+            status.innerText = "Please enter a story first.";
+            status.style.color = "red";
+            return;
+        }
+
+        try {
+            button.disabled = true;
+            button.innerText = "⏳ Converting...";
+            status.innerText = "Detecting language and creating audio...";
+            status.style.color = "#555";
+            result.style.display = "none";
+            audioPlayer.removeAttribute("src");
+            audioPlayer.load();
+
+            const response = await fetch(SYNTHESIZE_API, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ text: text })
+            });
+
+            const data = await response.json();
+            console.log("Synthesize response:", data);
+
+            if (!response.ok) {
+                throw new Error(data.error || data.message || "Speech conversion failed.");
+            }
+
+            document.getElementById("detectedLanguage").innerText = data.language || "Unknown";
+            document.getElementById("selectedVoice").innerText = data.voice || "Unknown";
+            document.getElementById("s3Key").innerText = data.s3Key || "Not returned";
+
+            if (data.audioUrl) {
+                audioPlayer.src = data.audioUrl;
+                audioPlayer.load();
+            }
+
+            result.style.display = "block";
+            status.innerText = "✓ Speech generated successfully.";
+            status.style.color = "green";
+
+            // Refresh community so the newly created story appears immediately.
+            await loadCommunityStories();
+
+        } catch (error) {
+            console.error("Conversion error:", error);
+            status.innerText = "❌ " + error.message;
+            status.style.color = "red";
+        } finally {
+            button.disabled = false;
+            button.innerText = "🔊 Convert to Speech";
+        }
+    }
+
+    async function loadCommunityStories() {
+        const list = document.getElementById("storyList");
+        const status = document.getElementById("communityStatus");
+
+        status.innerText = "Loading stories...";
+        list.innerHTML = "";
+
+        try {
+            const response = await fetch(STORIES_API);
+            const data = await response.json();
+
+            console.log("Community response:", data);
+
+            if (!response.ok) {
+                throw new Error(data.error || data.message || "Could not load stories.");
+            }
+
+            const stories = data.stories || [];
+
+            if (stories.length === 0) {
+                status.innerText = "No stories yet. Be the first to share one!";
+                list.innerHTML = '<div class="empty">📚 No community stories yet.</div>';
+                return;
+            }
+
+            status.innerText = `${stories.length} ${stories.length === 1 ? "story" : "stories"} shared by the community`;
+
+            stories.forEach((story, index) => {
+                const card = document.createElement("div");
+                card.className = "story-card";
+
+                const title = document.createElement("h3");
+                title.innerText = `📖 Story ${stories.length - index}`;
+
+                const storyText = document.createElement("div");
+                storyText.className = "story-text";
+                storyText.innerText = story.text || "No story text available.";
+
+                const badges = document.createElement("div");
+                badges.className = "badges";
+
+                const languageBadge = document.createElement("span");
+                languageBadge.className = "badge";
+                languageBadge.innerText = story.language === "hi-IN" ? "🇮🇳 Hindi" : "🇬🇧 English";
+
+                const voiceBadge = document.createElement("span");
+                voiceBadge.className = "badge";
+                voiceBadge.innerText = `🎙️ ${story.voice || "Unknown voice"}`;
+
+                const dateBadge = document.createElement("span");
+                dateBadge.className = "badge";
+                dateBadge.innerText = `🕒 ${formatDate(story.createdAt)}`;
+
+                badges.appendChild(languageBadge);
+                badges.appendChild(voiceBadge);
+                badges.appendChild(dateBadge);
+
+                card.appendChild(title);
+                card.appendChild(storyText);
+                card.appendChild(badges);
+
+                if (story.audioUrl) {
+                    const audio = document.createElement("audio");
+                    audio.controls = true;
+                    audio.src = story.audioUrl;
+                    card.appendChild(audio);
+                } else {
+                    const playButton = document.createElement("button");
+                    playButton.className = "play-btn";
+                    playButton.innerText = "▶ Play Voice";
+                    playButton.onclick = () => alert("Audio URL is not available for this story.");
+                    card.appendChild(playButton);
+                }
+
+                list.appendChild(card);
+            });
+
+        } catch (error) {
+            console.error("Community error:", error);
+            status.innerText = "❌ Could not load community stories.";
+            list.innerHTML = `<div class="empty">${escapeHtml(error.message)}</div>`;
+        }
+    }
+
+    function formatDate(value) {
+        if (!value) return "Unknown date";
+        const date = new Date(value);
+        if (Number.isNaN(date.getTime())) return value;
+        return date.toLocaleString();
+    }
+
+    function escapeHtml(value) {
+        return String(value)
+            .replaceAll("&", "&amp;")
+            .replaceAll("<", "&lt;")
+            .replaceAll(">", "&gt;")
+            .replaceAll('"', "&quot;")
+            .replaceAll("'", "&#039;");
+    }
+
+    // Load community stories when the page opens.
+    loadCommunityStories();
+</script>
+</body>
+</html>

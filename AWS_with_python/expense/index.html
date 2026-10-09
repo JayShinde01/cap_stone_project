@@ -1,0 +1,635 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="theme-color" content="#0b0d12">
+    <meta name="description" content="Smart Expense Tracker - modern personal finance dashboard">
+
+    <title>Smart Expense Tracker</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    >
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div class="app-shell">
+
+    <!-- ==============================
+         SIDEBAR
+    =============================== -->
+    <aside class="sidebar" id="sidebar">
+
+        <div class="brand">
+            <div class="brand-mark">
+                <i class="fa-solid fa-chart-line"></i>
+            </div>
+
+            <div>
+                <strong>Spendly</strong>
+                <span>Finance OS</span>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+
+            <a href="#dashboard" class="nav-item active">
+                <i class="fa-solid fa-grid-2"></i>
+                <span>Overview</span>
+            </a>
+
+            <a href="#transactions" class="nav-item">
+                <i class="fa-solid fa-receipt"></i>
+                <span>Transactions</span>
+            </a>
+
+            <a href="#analytics" class="nav-item">
+                <i class="fa-solid fa-chart-pie"></i>
+                <span>Analytics</span>
+            </a>
+
+        </nav>
+
+        <div class="sidebar-bottom">
+
+            <div class="sidebar-tip">
+                <div class="tip-icon">
+                    <i class="fa-solid fa-lightbulb"></i>
+                </div>
+
+                <div>
+                    <strong>Smart spending</strong>
+                    <p>Small habits create big savings.</p>
+                </div>
+            </div>
+
+            <button class="theme-toggle" id="themeToggle">
+                <i class="fa-solid fa-moon"></i>
+                <span>Dark mode</span>
+            </button>
+
+        </div>
+
+    </aside>
+
+
+    <!-- ==============================
+         MAIN
+    =============================== -->
+    <main class="main-content" id="dashboard">
+
+        <!-- TOPBAR -->
+        <header class="topbar">
+
+            <button class="mobile-menu" id="mobileMenu">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+
+            <div class="page-heading">
+                <span class="eyebrow">PERSONAL FINANCE</span>
+                <h1>Good evening<span class="heading-dot">.</span></h1>
+                <p>Here's your spending snapshot.</p>
+            </div>
+
+            <div class="topbar-actions">
+
+                <button class="icon-button" id="refreshBtn" title="Refresh data">
+                    <i class="fa-solid fa-rotate"></i>
+                </button>
+
+                <button class="add-expense-btn" id="openModalBtn">
+                    <i class="fa-solid fa-plus"></i>
+                    <span>Add expense</span>
+                </button>
+
+            </div>
+
+        </header>
+
+
+        <!-- ==============================
+             SUMMARY CARDS
+        =============================== -->
+        <section class="summary-grid">
+
+            <article class="summary-card primary-card">
+
+                <div class="card-top">
+                    <div class="summary-icon">
+                        <i class="fa-solid fa-wallet"></i>
+                    </div>
+
+                    <span class="card-label">TOTAL SPENDING</span>
+
+                    <button class="card-menu">
+                        <i class="fa-solid fa-ellipsis"></i>
+                    </button>
+                </div>
+
+                <div class="summary-value" id="totalSpending">
+                    ₹0
+                </div>
+
+                <div class="summary-footer">
+                    <span>
+                        <i class="fa-solid fa-arrow-trend-up"></i>
+                        All recorded expenses
+                    </span>
+                </div>
+
+            </article>
+
+
+            <article class="summary-card">
+
+                <div class="card-top">
+                    <div class="summary-icon soft-orange">
+                        <i class="fa-solid fa-fire"></i>
+                    </div>
+
+                    <span class="card-label">LARGEST EXPENSE</span>
+                </div>
+
+                <div class="summary-value" id="highestExpense">
+                    ₹0
+                </div>
+
+                <div class="summary-footer">
+                    <span id="highestExpenseTitle">No expenses yet</span>
+                </div>
+
+            </article>
+
+
+            <article class="summary-card">
+
+                <div class="card-top">
+                    <div class="summary-icon soft-purple">
+                        <i class="fa-solid fa-receipt"></i>
+                    </div>
+
+                    <span class="card-label">TRANSACTIONS</span>
+                </div>
+
+                <div class="summary-value" id="totalCount">
+                    0
+                </div>
+
+                <div class="summary-footer">
+                    <span>Recorded transactions</span>
+                </div>
+
+            </article>
+
+
+            <article class="summary-card">
+
+                <div class="card-top">
+                    <div class="summary-icon soft-blue">
+                        <i class="fa-solid fa-calculator"></i>
+                    </div>
+
+                    <span class="card-label">AVERAGE EXPENSE</span>
+                </div>
+
+                <div class="summary-value" id="averageExpense">
+                    ₹0
+                </div>
+
+                <div class="summary-footer">
+                    <span>Per transaction</span>
+                </div>
+
+            </article>
+
+        </section>
+
+
+        <!-- ==============================
+             INSIGHTS
+        =============================== -->
+        <section class="insights-section">
+
+            <div class="section-heading">
+                <div>
+                    <span class="eyebrow">SMART INSIGHTS</span>
+                    <h2>Where your money goes</h2>
+                </div>
+            </div>
+
+            <div class="insight-grid">
+
+                <article class="insight-card highlight-insight">
+
+                    <div class="insight-icon">
+                        <i class="fa-solid fa-ranking-star"></i>
+                    </div>
+
+                    <div>
+                        <span>TOP CATEGORY</span>
+                        <h3 id="topCategory">—</h3>
+                        <p id="topCategoryText">Add expenses to see your spending pattern.</p>
+                    </div>
+
+                </article>
+
+
+                <article class="insight-card">
+
+                    <div class="insight-icon blue-icon">
+                        <i class="fa-solid fa-calendar-days"></i>
+                    </div>
+
+                    <div>
+                        <span>DAILY AVERAGE</span>
+                        <h3 id="dailyAverage">₹0</h3>
+                        <p>Average spending per active day.</p>
+                    </div>
+
+                </article>
+
+
+                <article class="insight-card">
+
+                    <div class="insight-icon purple-icon">
+                        <i class="fa-solid fa-chart-simple"></i>
+                    </div>
+
+                    <div>
+                        <span>TRANSACTION SIZE</span>
+                        <h3 id="transactionSize">₹0</h3>
+                        <p>Typical expense based on your history.</p>
+                    </div>
+
+                </article>
+
+            </div>
+
+        </section>
+
+
+        <!-- ==============================
+             ANALYTICS
+        =============================== -->
+        <section class="analytics-section" id="analytics">
+
+            <div class="section-heading analytics-heading">
+                <div>
+                    <span class="eyebrow">ANALYTICS</span>
+                    <h2>Spending intelligence</h2>
+                </div>
+            </div>
+
+
+            <div class="charts-grid">
+
+                <!-- CATEGORY -->
+                <article class="chart-card category-chart-card">
+
+                    <div class="chart-header">
+
+                        <div>
+                            <h3>Spending by category</h3>
+                            <p>How your total spending is distributed</p>
+                        </div>
+
+                    </div>
+
+                    <div class="donut-container">
+                        <canvas id="categoryChart"></canvas>
+
+                        <div class="donut-center">
+                            <span>Total</span>
+                            <strong id="donutTotal">₹0</strong>
+                        </div>
+                    </div>
+
+                    <div class="chart-legend" id="categoryLegend"></div>
+
+                </article>
+
+
+                <!-- LINE -->
+                <article class="chart-card">
+
+                    <div class="chart-header">
+
+                        <div>
+                            <h3>Spending over time</h3>
+                            <p>Your expense activity by date</p>
+                        </div>
+
+                    </div>
+
+                    <div class="line-chart-container">
+                        <canvas id="timeChart"></canvas>
+                    </div>
+
+                </article>
+
+
+                <!-- BAR -->
+                <article class="chart-card full-chart">
+
+                    <div class="chart-header">
+
+                        <div>
+                            <h3>Category comparison</h3>
+                            <p>Compare where your money is being spent</p>
+                        </div>
+
+                    </div>
+
+                    <div class="bar-chart-container">
+                        <canvas id="barChart"></canvas>
+                    </div>
+
+                </article>
+
+            </div>
+
+        </section>
+
+
+        <!-- ==============================
+             TRANSACTIONS
+        =============================== -->
+        <section class="transactions-section" id="transactions">
+
+            <div class="section-heading">
+
+                <div>
+                    <span class="eyebrow">ACTIVITY</span>
+                    <h2>Recent transactions</h2>
+                </div>
+
+                <button class="export-btn" id="exportBtn">
+                    <i class="fa-solid fa-download"></i>
+                    Export CSV
+                </button>
+
+            </div>
+
+
+            <div class="transaction-toolbar">
+
+                <div class="search-box">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input
+                        type="text"
+                        id="searchInput"
+                        placeholder="Search expenses..."
+                    >
+                </div>
+
+                <div class="filter-controls">
+
+                    <select id="filterCategory">
+                        <option value="All">All categories</option>
+                        <option value="Food">Food</option>
+                        <option value="Transport">Transport</option>
+                        <option value="Shopping">Shopping</option>
+                        <option value="Bills">Bills</option>
+                        <option value="Entertainment">Entertainment</option>
+                        <option value="Other">Other</option>
+                    </select>
+
+                    <select id="sortSelect">
+                        <option value="newest">Newest first</option>
+                        <option value="oldest">Oldest first</option>
+                        <option value="highest">Highest amount</option>
+                        <option value="lowest">Lowest amount</option>
+                        <option value="az">Title A-Z</option>
+                    </select>
+
+                </div>
+
+            </div>
+
+
+            <div class="transaction-list-wrapper">
+
+                <div class="transaction-list-header">
+                    <span>DESCRIPTION</span>
+                    <span>CATEGORY</span>
+                    <span>DATE</span>
+                    <span>AMOUNT</span>
+                    <span></span>
+                </div>
+
+                <div id="expensesList" class="expenses-list">
+                    <!-- Transactions injected here -->
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <footer class="app-footer">
+            <span>Spendly Finance OS</span>
+            <span>Data powered by your AWS backend</span>
+        </footer>
+
+    </main>
+
+</div>
+
+
+<!-- ==============================
+     ADD EXPENSE MODAL
+=============================== -->
+<div class="modal-overlay" id="expenseModal">
+
+    <div class="expense-modal">
+
+        <div class="modal-header">
+
+            <div>
+                <span class="eyebrow">NEW TRANSACTION</span>
+                <h2>Add expense</h2>
+                <p>Record where your money went.</p>
+            </div>
+
+            <button class="modal-close" id="closeModalBtn">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+        </div>
+
+
+        <form id="expenseForm">
+
+            <div class="amount-field">
+
+                <label for="amount">Amount</label>
+
+                <div class="amount-input">
+                    <span>₹</span>
+
+                    <input
+                        type="number"
+                        id="amount"
+                        placeholder="0.00"
+                        min="1"
+                        step="any"
+                        required
+                    >
+                </div>
+
+            </div>
+
+
+            <div class="input-grid">
+
+                <div class="input-group">
+
+                    <label for="title">Expense title</label>
+
+                    <div class="input-with-icon">
+                        <i class="fa-solid fa-pen"></i>
+
+                        <input
+                            type="text"
+                            id="title"
+                            placeholder="e.g. Grocery shopping"
+                            required
+                        >
+                    </div>
+
+                </div>
+
+
+                <div class="input-group">
+
+                    <label for="category">Category</label>
+
+                    <div class="input-with-icon">
+
+                        <i class="fa-solid fa-tag"></i>
+
+                        <select id="category" required>
+                            <option value="" disabled selected>
+                                Select category
+                            </option>
+                            <option value="Food">🍔 Food</option>
+                            <option value="Transport">🚗 Transport</option>
+                            <option value="Shopping">🛍️ Shopping</option>
+                            <option value="Bills">💡 Bills</option>
+                            <option value="Entertainment">🎬 Entertainment</option>
+                            <option value="Other">📦 Other</option>
+                        </select>
+
+                    </div>
+
+                </div>
+
+
+                <div class="input-group full-input">
+
+                    <label for="date">Date</label>
+
+                    <div class="input-with-icon">
+
+                        <i class="fa-solid fa-calendar"></i>
+
+                        <input
+                            type="date"
+                            id="date"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="modal-actions">
+
+                <button
+                    type="button"
+                    class="cancel-btn"
+                    id="cancelModalBtn"
+                >
+                    Cancel
+                </button>
+
+                <button
+                    type="submit"
+                    class="submit-expense-btn"
+                    id="submitExpenseBtn"
+                >
+                    <i class="fa-solid fa-plus"></i>
+                    Add expense
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<!-- ==============================
+     DELETE CONFIRMATION
+=============================== -->
+<div class="modal-overlay" id="deleteModal">
+
+    <div class="confirm-modal">
+
+        <div class="delete-icon">
+            <i class="fa-solid fa-trash"></i>
+        </div>
+
+        <h2>Delete expense?</h2>
+
+        <p>
+            This transaction will be permanently removed.
+            This action cannot be undone.
+        </p>
+
+        <div class="confirm-actions">
+
+            <button class="cancel-btn" id="cancelDeleteBtn">
+                Keep it
+            </button>
+
+            <button class="delete-confirm-btn" id="confirmDeleteBtn">
+                Delete expense
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ==============================
+     TOAST
+=============================== -->
+<div class="toast-container" id="toastContainer"></div>
+
+
+<script src="script.js"></script>
+
+</body>
+</html>
+

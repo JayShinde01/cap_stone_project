@@ -1,0 +1,334 @@
+# ☁️ AWS Learning Journey — Hands-On Projects & Cloud Engineering
+
+A collection of hands-on projects, experiments, and practical learnings focused on **Amazon Web Services (AWS), Python automation, serverless architecture, cloud deployment, monitoring, networking, and container orchestration**.
+
+This repository documents my journey of learning AWS by building real-world applications and implementing cloud services rather than relying only on theoretical concepts.
+
+## 🎯 Learning Objectives
+
+- Understand core AWS services and cloud architecture.
+- Build serverless applications using AWS Lambda and API Gateway.
+- Store and manage files using Amazon S3.
+- Integrate AI capabilities using Amazon Rekognition, Amazon Textract, and Amazon Polly.
+- Automate cloud workflows using Python and Boto3.
+- Work with databases using Amazon DynamoDB and Amazon RDS.
+- Implement event-driven architectures using S3 events, EventBridge, and SNS.
+- Deploy and scale applications using EC2, Load Balancers, Auto Scaling, Docker, ECS, and Kubernetes.
+- Practice IAM permissions, security groups, monitoring, troubleshooting, and cloud resource management.
+
+## 🛠️ AWS Services & Technologies
+
+| Category | Services and Technologies |
+|---|---|
+| Compute | Amazon EC2, AWS Lambda |
+| Storage | Amazon S3 |
+| Databases | Amazon DynamoDB, Amazon RDS (MySQL) |
+| Networking | Amazon API Gateway, Security Groups, VPC |
+| AI & Machine Learning | Amazon Rekognition, Amazon Textract, Amazon Polly |
+| Messaging & Events | Amazon SNS, Amazon EventBridge |
+| Monitoring | Amazon CloudWatch |
+| Identity & Security | AWS IAM, IAM Roles, IAM Policies |
+| Containers | Docker, Amazon ECR, Amazon ECS, Kubernetes, Minikube |
+| Automation | Python, Boto3 |
+| Frontend | HTML, CSS, JavaScript |
+| Backend | Python, Flask, REST APIs |
+| Deployment | Nginx, Application Load Balancer, Network Load Balancer, Auto Scaling |
+
+## 📚 Hands-On Projects
+
+### 1. Happiest Face Detector
+
+**Objective:** Build an application that analyzes facial expressions in uploaded or captured images.
+
+**AWS services:** Amazon S3, AWS Lambda, Amazon Rekognition, Amazon DynamoDB, Amazon API Gateway.
+
+**What I learned:**
+- Uploading images to S3.
+- Invoking Rekognition to detect facial attributes and emotions.
+- Processing results through Lambda functions.
+- Storing analysis results in DynamoDB.
+- Connecting a web frontend to backend APIs.
+
+### 2. Celebrity Recognition in Videos
+
+**Objective:** Identify celebrities appearing in uploaded videos using Amazon Rekognition Video.
+
+**AWS services:** Amazon S3, AWS Lambda, Amazon Rekognition, Amazon CloudWatch.
+
+**What I learned:**
+- Triggering Lambda functions from S3 upload events.
+- Using asynchronous video-analysis operations.
+- Working with celebrity-recognition results.
+- Monitoring execution through CloudWatch logs.
+
+### 3. Story to Speech
+
+**Objective:** Convert written stories into audio using Amazon Polly.
+
+**AWS services:** Amazon Polly, Amazon S3, AWS Lambda, Amazon API Gateway, Amazon DynamoDB.
+
+**What I learned:**
+- Generating speech from text.
+- Saving generated MP3 files in S3.
+- Building APIs for text-to-speech conversion.
+- Storing and retrieving community story records.
+- Understanding IAM permissions for database access.
+
+### 4. Smart Civic Complaint System
+
+**Objective:** Create a complaint-reporting workflow for civic problems such as garbage, traffic, streetlights, and potholes.
+
+**AWS services:** Amazon S3, AWS Lambda, Amazon Rekognition, Amazon DynamoDB, Amazon API Gateway, Amazon EventBridge, Amazon SNS, Amazon Polly.
+
+**What I learned:**
+- Building an event-driven complaint-processing workflow.
+- Capturing complaint details and location information.
+- Classifying uploaded images.
+- Storing complaints and their status in DynamoDB.
+- Generating audio summaries and sending notifications.
+
+### 5. Case File #001
+
+**Objective:** Experiment with an AI-assisted image investigation workflow.
+
+**AWS services:** Amazon S3, Amazon DynamoDB, AWS Lambda, Amazon Rekognition, Gemini API.
+
+**What I learned:**
+- Combining image analysis with generative AI.
+- Passing structured data between cloud services.
+- Building a backend workflow that combines AI-generated insights with image information.
+
+### 6. AI Travel Memory
+
+**Objective:** Build an AI-assisted travel-memory application using image analysis and generated content.
+
+**AWS services:** Amazon S3, Amazon Rekognition, Amazon DynamoDB, Amazon Polly, Amazon SNS, AWS Lambda, Amazon API Gateway, Gemini API.
+
+**What I learned:**
+- Processing uploaded travel images.
+- Combining image recognition with generative AI.
+- Storing travel-related information.
+- Generating audio and notifications.
+- Integrating multiple AWS services into one application.
+
+### 7. Order Management System
+
+**Objective:** Develop a cloud-based order management application with order creation and tracking.
+
+**AWS services:** Amazon S3, Amazon API Gateway, AWS Lambda, Amazon RDS (MySQL), Amazon SNS, Amazon EventBridge.
+
+**What I learned:**
+- Connecting serverless APIs to a relational database.
+- Designing relational tables for orders and order items.
+- Implementing order-processing workflows.
+- Building dashboards and filtering records.
+- Integrating event-driven notifications.
+
+### 8. Serverless Image Resizer
+
+**Objective:** Automatically generate resized image versions when a new image is uploaded.
+
+**AWS services:** Amazon S3, AWS Lambda, AWS IAM, Amazon CloudWatch.
+
+**Planned workflow:**
+
+1. Upload an original image to S3.
+2. Trigger Lambda through an S3 object-created event.
+3. Process the image using Python.
+4. Generate thumbnail, medium, and large versions.
+5. Store resized images in a designated output location.
+
+**Key learning areas:** Event-driven processing, IAM permissions, image processing, and CloudWatch troubleshooting.
+
+### 9. Automate AWS Resource Provisioning Using Python
+
+**Objective:** Learn to manage AWS resources programmatically instead of performing every operation manually through the AWS Console.
+
+**Technologies:** Python, Boto3, AWS IAM, Amazon EC2, Amazon S3.
+
+**Planned capabilities:**
+- Create S3 buckets.
+- Upload files to S3.
+- Launch EC2 instances.
+- Stop or terminate instances.
+- Automate repetitive cloud-management tasks.
+
+**Key learning areas:** AWS SDK usage, resource automation, permissions, and error handling.
+
+### 10. Static Website Hosting on Amazon S3
+
+**Objective:** Experiment with hosting static websites using S3 and a simple upload interface.
+
+**Technologies:** Amazon S3, Python, Flask, HTML, CSS, JavaScript.
+
+**Learning areas:**
+- Uploading website files to S3.
+- Organizing HTML, CSS, and JavaScript assets.
+- Understanding static website hosting.
+- Working with bucket policies and access permissions.
+- Building a simple website-upload workflow.
+
+### 11. Multi-Tier Web Application Deployment
+
+**Objective:** Understand how a frontend, backend, and database can be separated into distinct application layers.
+
+**AWS services:** Amazon EC2, Amazon S3, Amazon RDS, AWS IAM, Amazon VPC and Security Groups.
+
+**What I learned:**
+- Separating frontend and backend responsibilities.
+- Connecting backend applications to a database.
+- Understanding network access rules.
+- Configuring database connectivity and environment variables.
+- Exploring deployment options for multi-tier applications.
+
+### 12. Scalable Web Application Using an Application Load Balancer
+
+**Objective:** Distribute incoming HTTP traffic across EC2 instances and automatically replace failed or terminated instances.
+
+**AWS services:** Amazon EC2, Application Load Balancer (ALB), Auto Scaling Groups, Target Groups, Security Groups, Amazon CloudWatch.
+
+**What I learned:**
+- Creating an AMI and launch template.
+- Configuring an Auto Scaling Group.
+- Registering instances with a target group.
+- Monitoring target health.
+- Testing traffic distribution.
+- Observing automatic instance replacement after termination.
+
+### 13. Scalable Web Application Using a Network Load Balancer
+
+**Objective:** Explore load balancing for TCP-based workloads and understand how a Network Load Balancer differs from an Application Load Balancer.
+
+**AWS services:** Amazon EC2, Network Load Balancer (NLB), Target Groups, Auto Scaling Groups, Security Groups.
+
+**What I learned:**
+- Configuring a Network Load Balancer.
+- Registering targets and checking their health.
+- Understanding listener protocols and ports.
+- Comparing Layer 4 and Layer 7 load balancing.
+- Troubleshooting unhealthy targets.
+
+### 14. CloudOps Rescue Center
+
+**Objective:** Build, containerize, deploy, scale, and recover a microservices application while learning Docker and Kubernetes.
+
+**Technologies:** Python, Flask, Docker, Docker Compose, Amazon ECR, Amazon ECS (Fargate), Kubernetes, Minikube, kubectl, Amazon CloudWatch.
+
+**Microservices:**
+- `frontend` — incident management interface.
+- `incident-api` — creates, retrieves, and updates incidents.
+- `notification-service` — processes incident notifications.
+
+**Progress and learning areas:**
+- Creating separate Dockerfiles for each service.
+- Building and running containers.
+- Connecting services using Docker Compose networking.
+- Managing configuration with environment variables.
+- Pushing container images to Amazon ECR.
+- Deploying services to Amazon ECS with Fargate.
+- Configuring ECS task definitions and services.
+- Debugging security groups and service-to-service connectivity.
+- Creating Kubernetes Deployments, Pods, and Services.
+- Exposing the Incident API through a NodePort Service.
+- Connecting Kubernetes services using internal DNS names.
+- Scaling the Incident API from one replica to three.
+- Demonstrating automatic Pod replacement.
+- Working with ConfigMaps and Secrets.
+
+**Current status:** The ECS microservice flow and initial local Kubernetes deployments, service discovery, scaling, and self-healing experiments have been demonstrated. Remaining Kubernetes configuration and final documentation work can continue as the project progresses.
+
+## 🧠 Key Concepts Practiced
+
+### Serverless Architecture
+- Lambda functions and triggers.
+- API Gateway integrations.
+- S3 event notifications.
+- Event-driven application design.
+
+### Storage and Databases
+- S3 buckets, objects, and permissions.
+- DynamoDB tables and records.
+- Relational database connectivity using MySQL and RDS.
+
+### AI Service Integration
+- Facial attributes and emotion detection.
+- Celebrity recognition in videos.
+- Text-to-speech conversion.
+- Document and image-processing workflows.
+- Integrating external generative AI APIs.
+
+### Networking and Deployment
+- EC2 instances and AMIs.
+- Security groups and port configuration.
+- ALB and NLB.
+- Target groups and health checks.
+- Auto Scaling and instance recovery.
+- Docker images, containers, and networking.
+- ECS tasks and services.
+- Kubernetes Pods, Deployments, Services, replicas, ConfigMaps, and Secrets.
+
+### Monitoring and Troubleshooting
+- Reading CloudWatch logs.
+- Debugging API errors and failed requests.
+- Investigating IAM permission issues.
+- Diagnosing security-group and networking problems.
+- Testing health endpoints.
+- Understanding automatic recovery behavior.
+
+## 📂 Suggested Repository Structure
+
+```text
+AWS-Learning-Journey/
+├── README.md
+├── serverless-projects/
+│   ├── happiest-face-detector/
+│   ├── celebrity-recognition/
+│   ├── story-to-speech/
+│   ├── civic-complaint-system/
+│   └── serverless-image-resizer/
+├── python-automation/
+│   └── aws-resource-provisioning/
+├── database-projects/
+│   └── order-management-system/
+├── cloud-deployment/
+│   ├── static-website-hosting/
+│   ├── multi-tier-application/
+│   ├── alb-auto-scaling/
+│   └── nlb-auto-scaling/
+└── containers-and-orchestration/
+    └── cloudops-rescue-center/
+```
+
+*This is a suggested organization; it does not imply every project already has its own folder in the repository.*
+
+## 🔐 Security Practices
+
+- Follow the principle of least privilege when configuring IAM policies.
+- Avoid committing AWS access keys, secret keys, passwords, or API tokens.
+- Use IAM roles where appropriate.
+- Restrict security-group rules to required ports and trusted sources.
+- Avoid leaving publicly accessible resources open unnecessarily.
+- Stop or delete unused cloud resources to help control costs.
+
+## 🚀 How I Learn
+
+My approach is project-based:
+
+1. Understand the objective and AWS services involved.
+2. Build a working implementation.
+3. Test the expected behavior.
+4. Troubleshoot real configuration and permission issues.
+5. Document the architecture and lessons learned.
+6. Improve the implementation with security, automation, monitoring, and scalability.
+
+## 📌 Repository Purpose
+
+This repository serves as a record of my hands-on AWS learning, from foundational cloud services to serverless applications, AI integrations, infrastructure automation, containerization, and Kubernetes.
+
+The goal is to develop practical cloud engineering skills by building, testing, troubleshooting, and documenting real implementations.
+
+---
+
+**Learning by building. Building by experimenting. Improving through troubleshooting.**
+
+*Note: Individual project completion status may differ. Some sections document completed experiments, while others describe planned or ongoing implementations.*

@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CivicCare — Report a Local Issue</title>
+<style>
+:root{
+  --bg:#f5f7f4; --surface:#fff; --text:#17231c; --muted:#657168;
+  --primary:#176b45; --primary-dark:#0f5234; --soft:#e7f3ec;
+  --border:#dfe6e1; --danger:#b42318; --warning:#9a6700;
+  --shadow:0 12px 35px rgba(23,35,28,.08); --radius:20px;
+}
+*{box-sizing:border-box} body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif;background:var(--bg);color:var(--text)}
+button,input,textarea{font:inherit} button{cursor:pointer}
+.nav{height:70px;background:#fff;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 6%;position:sticky;top:0;z-index:10}
+.brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:20px}.brand-icon{width:38px;height:38px;border-radius:12px;background:var(--primary);color:#fff;display:grid;place-items:center}
+.nav-link{color:var(--primary);text-decoration:none;font-weight:700}
+.container{max-width:1100px;margin:auto;padding:38px 20px 70px}
+.hero{display:grid;grid-template-columns:1.35fr .65fr;gap:24px;align-items:stretch;margin-bottom:24px}
+.hero-main{background:var(--primary);color:white;border-radius:28px;padding:42px;box-shadow:var(--shadow)}
+.eyebrow{font-size:13px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;opacity:.8}
+h1{font-size:clamp(34px,5vw,58px);line-height:1.02;margin:12px 0 18px;letter-spacing:-.04em}
+.hero p{font-size:17px;line-height:1.6;max-width:650px;margin:0;color:#e9f5ee}
+.hero-side{background:#e9f2ec;border-radius:28px;padding:28px;display:flex;flex-direction:column;justify-content:center}
+.hero-side strong{font-size:20px;margin-bottom:8px}.hero-side p{color:var(--muted);line-height:1.55}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:24px}.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:28px;box-shadow:var(--shadow)}
+.card h2{margin:0 0 7px;font-size:25px}.sub{color:var(--muted);margin:0 0 22px;line-height:1.5}
+label{display:block;font-weight:750;font-size:14px;margin:17px 0 8px}
+input,textarea{width:100%;border:1px solid #ccd6cf;background:#fbfcfb;border-radius:12px;padding:13px 14px;outline:none;transition:.2s}
+input:focus,textarea:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(23,107,69,.10)}
+textarea{min-height:105px;resize:vertical}
+.file{border:2px dashed #c9d8ce;border-radius:16px;padding:18px;background:#fafdfb}
+.file input{border:0;padding:0;background:transparent}.preview{display:none;width:100%;max-height:250px;object-fit:cover;border-radius:14px;margin-top:14px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}.location-row{display:flex;gap:10px;align-items:center}.location-row input{min-width:0}
+.btn{border:0;border-radius:12px;padding:13px 17px;font-weight:800}.btn-primary{background:var(--primary);color:white}.btn-primary:hover{background:var(--primary-dark)}
+.btn-light{background:var(--soft);color:var(--primary)}.btn:disabled{opacity:.55;cursor:not-allowed}
+.submit{width:100%;margin-top:22px;font-size:15px}.message{display:none;margin-top:16px;padding:13px 15px;border-radius:12px;line-height:1.45}.success{background:#e8f7ee;color:#12613c}.error{background:#fff0ef;color:var(--danger)}
+.result{display:none;margin-top:18px;background:#f7faf8;border:1px solid var(--border);border-radius:15px;padding:18px}.result-id{font-family:ui-monospace,monospace;word-break:break-all;background:white;padding:10px;border-radius:9px;border:1px solid var(--border)}
+.status{display:inline-flex;padding:6px 10px;border-radius:999px;font-size:12px;font-weight:850}.pending{background:#fff4d6;color:var(--warning)}.resolved{background:#dff5e8;color:#12613c}
+.audio{width:100%;margin-top:12px}
+.track{margin-top:24px}.track-form{display:flex;gap:10px}.track-form input{flex:1}
+.track-card{margin-top:15px;border:1px solid var(--border);border-radius:15px;padding:18px;display:none}.track-card dl{display:grid;grid-template-columns:140px 1fr;gap:10px;margin:0}.track-card dt{font-weight:750;color:var(--muted)}.track-card dd{margin:0;word-break:break-word}
+.footer{text-align:center;color:var(--muted);font-size:13px;margin-top:30px}
+@media(max-width:800px){.hero,.grid{grid-template-columns:1fr}.hero-main{padding:30px}.hero-side{padding:24px}.nav{padding:0 20px}.row{grid-template-columns:1fr}}
+@media(max-width:520px){.container{padding:22px 13px 45px}.card{padding:20px}.track-form{flex-direction:column}.location-row{flex-direction:column;align-items:stretch}.nav-link{font-size:13px}.hero-main{border-radius:22px}.hero-side{border-radius:22px}}
+</style>
+</head>
+<body>
+<nav class="nav">
+  <div class="brand"><span class="brand-icon">✓</span> CivicCare</div>
+  <a class="nav-link" href="#track">Track complaint</a>
+</nav>
+
+<main class="container">
+  <section class="hero">
+    <div class="hero-main">
+      <div class="eyebrow">Smart civic reporting</div>
+      <h1>See a problem? Report it.</h1>
+      <p>Upload a photo of a local civic issue. The system analyzes it, records your complaint and gives you a complaint ID so you can track its status.</p>
+    </div>
+    <div class="hero-side">
+      <strong>Simple for everyone</strong>
+      <p>Take a photo, add the location and submit. Your complaint starts as <b>Pending</b> and can be updated by the administration team.</p>
+    </div>
+  </section>
+
+  <div class="grid">
+    <section class="card">
+      <h2>Register a complaint</h2>
+      <p class="sub">Provide a photo and a few details about the issue.</p>
+
+      <form id="complaintForm">
+        <label for="image">Photo of the issue *</label>
+        <div class="file">
+          <input id="image" type="file" accept="image/*" capture="environment" required>
+          <img id="preview" class="preview" alt="Selected complaint photo">
+        </div>
+
+        <label for="description">What happened?</label>
+        <textarea id="description" placeholder="Example: Large pothole near the main road..."></textarea>
+
+        <label for="locationName">Location name</label>
+        <input id="locationName" type="text" placeholder="Example: Sitabuldi Main Road, Nagpur">
+
+        <label>Location coordinates</label>
+        <div class="location-row">
+          <input id="latitude" type="number" step="any" placeholder="Latitude">
+          <input id="longitude" type="number" step="any" placeholder="Longitude">
+          <button type="button" class="btn btn-light" id="locationBtn">Use my location</button>
+        </div>
+
+        <div class="row">
+          <div><label for="date">Date</label><input id="date" type="date"></div>
+          <div><label for="time">Time</label><input id="time" type="time"></div>
+        </div>
+
+        <button class="btn btn-primary submit" id="submitBtn" type="submit">Submit complaint</button>
+        <div id="message" class="message"></div>
+        <div id="result" class="result"></div>
+      </form>
+    </section>
+
+    <section class="card track" id="track">
+      <h2>Track your complaint</h2>
+      <p class="sub">Enter the complaint ID you received after submitting your report.</p>
+      <div class="track-form">
+        <input id="trackComplaintId" placeholder="Paste complaint ID">
+        <button class="btn btn-primary" id="trackBtn" type="button">Check status</button>
+      </div>
+      <div id="trackMessage" class="message"></div>
+      <div id="trackCard" class="track-card"></div>
+
+      <div style="margin-top:28px;padding-top:24px;border-top:1px solid var(--border)">
+        <h3 style="margin:0 0 6px">My complaint history</h3>
+        <p class="sub" style="margin-bottom:14px">Complaints submitted from this browser are saved here so you can quickly check them again.</p>
+        <div id="historyList"></div>
+      </div>
+    </section>
+  </div>
+
+  <div class="footer">Smart Civic Complaint System • Built with AWS services</div>
+</main>
+
+<script>
+const API_BASE = "https://hll4g6l8fd.execute-api.ap-south-1.amazonaws.com";
+const complaintForm = document.getElementById("complaintForm");
+const imageInput = document.getElementById("image");
+const preview = document.getElementById("preview");
+const submitBtn = document.getElementById("submitBtn");
+
+function nowLocal() {
+  const d = new Date();
+  document.getElementById("date").value = d.toISOString().slice(0,10);
+  document.getElementById("time").value = d.toTimeString().slice(0,5);
+}
+nowLocal();
+renderHistory();
+
+function showMessage(id, text, type) {
+  const el = document.getElementById(id);
+  el.className = "message " + type;
+  el.textContent = text;
+  el.style.display = "block";
+}
+
+imageInput.addEventListener("change", () => {
+  const file = imageInput.files[0];
+  if (!file) return;
+  preview.src = URL.createObjectURL(file);
+  preview.style.display = "block";
+});
+
+document.getElementById("locationBtn").addEventListener("click", () => {
+  if (!navigator.geolocation) {
+    showMessage("message", "Location is not supported by this browser.", "error");
+    return;
+  }
+  const btn = document.getElementById("locationBtn");
+  btn.disabled = true; btn.textContent = "Getting location...";
+  navigator.geolocation.getCurrentPosition(
+    pos => {
+      document.getElementById("latitude").value = pos.coords.latitude.toFixed(6);
+      document.getElementById("longitude").value = pos.coords.longitude.toFixed(6);
+      btn.disabled = false; btn.textContent = "Location added";
+    },
+    () => {
+      showMessage("message", "Could not get your location. Please allow location access.", "error");
+      btn.disabled = false; btn.textContent = "Use my location";
+    },
+    {enableHighAccuracy:true, timeout:10000}
+  );
+});
+
+function fileToBase64(file) {
+  return new Promise((resolve,reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+complaintForm.addEventListener("submit", async e => {
+  e.preventDefault();
+  const file = imageInput.files[0];
+  if (!file) return;
+
+  submitBtn.disabled = true;
+  submitBtn.textContent = "Submitting...";
+  document.getElementById("result").style.display = "none";
+
+  try {
+    const image = await fileToBase64(file);
+    const payload = {
+      image,
+      description: document.getElementById("description").value.trim(),
+      locationName: document.getElementById("locationName").value.trim(),
+      latitude: document.getElementById("latitude").value || null,
+      longitude: document.getElementById("longitude").value || null,
+      date: document.getElementById("date").value,
+      time: document.getElementById("time").value
+    };
+
+    const res = await fetch(API_BASE + "/complaints", {
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify(payload)
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || "Complaint submission failed.");
+
+    const c = data.complaint;
+    const result = document.getElementById("result");
+    result.innerHTML = `
+      <b>Complaint registered successfully</b>
+      <p>Your complaint ID:</p>
+      <div class="result-id">${escapeHtml(c.complaintId)}</div>
+      <p>Category: <b>${escapeHtml(c.category)}</b></p>
+      <p>Status: <span class="status pending">PENDING</span></p>
+    `;
+    result.style.display = "block";
+    saveHistory(c);
+    showMessage("message", "Complaint submitted successfully. Your complaint was added to history.", "success");
+    complaintForm.reset();
+    preview.style.display = "none";
+    nowLocal();
+  } catch(err) {
+    showMessage("message", err.message, "error");
+  } finally {
+    submitBtn.disabled = false;
+    submitBtn.textContent = "Submit complaint";
+  }
+});
+
+
+function getHistory() {
+  try { return JSON.parse(localStorage.getItem("civicComplaintHistory") || "[]"); }
+  catch { return []; }
+}
+
+function saveHistory(c) {
+  const history = getHistory().filter(x => x.complaintId !== c.complaintId);
+  history.unshift({
+    complaintId: c.complaintId,
+    category: c.category,
+    description: c.description,
+    locationName: c.locationName || "",
+    date: c.date || "",
+    time: c.time || ""
+  });
+  localStorage.setItem("civicComplaintHistory", JSON.stringify(history.slice(0, 20)));
+  renderHistory();
+}
+
+function renderHistory() {
+  const list = document.getElementById("historyList");
+  const history = getHistory();
+  if (!history.length) {
+    list.innerHTML = '<div style="padding:15px;border:1px dashed var(--border);border-radius:12px;color:var(--muted)">No complaints in history yet.</div>';
+    return;
+  }
+  list.innerHTML = history.map(h => `
+    <div style="padding:14px;border:1px solid var(--border);border-radius:13px;margin-bottom:9px;background:#fbfcfb">
+      <div style="display:flex;justify-content:space-between;gap:10px;align-items:start">
+        <div>
+          <b>${escapeHtml(h.category || "OTHER")}</b>
+          <div style="font-size:13px;color:var(--muted);margin-top:4px">${escapeHtml(h.locationName || h.description || "Civic complaint")}</div>
+        </div>
+        <button type="button" class="btn btn-light" onclick="trackFromHistory('${escapeHtml(h.complaintId)}')">Check</button>
+      </div>
+      <div style="font-size:11px;color:var(--muted);font-family:ui-monospace,monospace;margin-top:8px;word-break:break-all">${escapeHtml(h.complaintId)}</div>
+    </div>
+  `).join("");
+}
+
+function trackFromHistory(id) {
+  document.getElementById("trackComplaintId").value = id;
+  trackComplaint();
+}
+
+document.getElementById("trackBtn").addEventListener("click", trackComplaint);
+document.getElementById("trackComplaintId").addEventListener("keydown", e => {
+  if (e.key === "Enter") trackComplaint();
+});
+
+async function trackComplaint() {
+  const id = document.getElementById("trackComplaintId").value.trim();
+  const card = document.getElementById("trackCard");
+  card.style.display = "none";
+  if (!id) {
+    showMessage("trackMessage", "Please enter your complaint ID.", "error");
+    return;
+  }
+  const btn = document.getElementById("trackBtn");
+  btn.disabled = true; btn.textContent = "Checking...";
+  try {
+    const res = await fetch(API_BASE + "/complaints/" + encodeURIComponent(id));
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || "Complaint not found.");
+    const c = data.complaint;
+    saveHistory(c);
+    const cls = String(c.status || "PENDING").toLowerCase();
+    card.innerHTML = `
+      <dl>
+        <dt>Complaint ID</dt><dd>${escapeHtml(c.complaintId)}</dd>
+        <dt>Category</dt><dd>${escapeHtml(c.category || "OTHER")}</dd>
+        <dt>Description</dt><dd>${escapeHtml(c.description || "—")}</dd>
+        <dt>Location</dt><dd>${escapeHtml(c.locationName || "—")}</dd>
+        <dt>Date</dt><dd>${escapeHtml(c.date || "—")}</dd>
+        <dt>Time</dt><dd>${escapeHtml(c.time || "—")}</dd>
+        <dt>Status</dt><dd><span class="status ${cls}">${escapeHtml(c.status || "PENDING")}</span></dd>
+        ${c.imageUrl ? `<dt>Photo</dt><dd><a href="${c.imageUrl}" target="_blank">View photo</a></dd>` : ""}
+        
+      </dl>
+      ${c.status === "RESOLVED" ? `
+        <div style="margin-top:18px;padding:14px;border-radius:12px;background:#fff8e8;border:1px solid #f0dfb0">
+          <b>Issue still not resolved?</b>
+          <p style="margin:6px 0 12px;color:#66736b">Tell the administration team that the problem is still present. Your complaint will be reopened for review.</p>
+          <button class="btn btn-light" type="button" onclick="reopenComplaint('${escapeHtml(c.complaintId)}')">Issue is not resolved</button>
+        </div>` : ""}`;
+    card.style.display = "block";
+    document.getElementById("trackMessage").style.display = "none";
+  } catch(err) {
+    showMessage("trackMessage", err.message, "error");
+  } finally {
+    btn.disabled = false; btn.textContent = "Check status";
+  }
+}
+
+
+async function reopenComplaint(id) {
+  if (!confirm("Are you sure this issue is still not resolved?")) return;
+
+  try {
+    const res = await fetch(
+      API_BASE + "/complaints/" + encodeURIComponent(id),
+      {
+        method: "PUT",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({status: "REOPENED"})
+      }
+    );
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      throw new Error(data.error || "Could not reopen complaint.");
+    }
+
+    showMessage("trackMessage", "Complaint reopened successfully. The administration team has been notified.", "success");
+    await trackComplaint();
+
+  } catch (err) {
+    showMessage("trackMessage", err.message, "error");
+  }
+}
+
+function escapeHtml(value) {
+  return String(value).replace(/[&<>"']/g, c => ({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
+  }[c]));
+}
+</script>
+</body>
+</html>

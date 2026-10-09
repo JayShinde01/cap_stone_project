@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Ganapati Bappa Donation</title>
+
+    <style>
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+            margin: 0;
+            padding: 30px;
+        }
+
+        .container {
+            max-width: 500px;
+            margin: auto;
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        label {
+            display: block;
+            margin-top: 15px;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 10px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+        }
+
+        button {
+            width: 100%;
+            margin-top: 20px;
+            padding: 12px;
+            background: #ff7a00;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #e66d00;
+        }
+
+        #message {
+            margin-top: 15px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        #cashFields,
+        #onlineFields {
+            display: none;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>🙏 Ganapati Bappa Donation 🙏</h1>
+
+    <form id="donationForm">
+
+        <label>Donor Name</label>
+
+        <input
+            type="text"
+            id="donorName"
+            required
+        >
+
+
+        <label>Email</label>
+
+        <input
+            type="email"
+            id="email"
+            required
+        >
+
+
+        <label>Amount (₹)</label>
+
+        <input
+            type="number"
+            id="amount"
+            min="1"
+            required
+        >
+
+
+        <label>Donation Date</label>
+
+        <input
+            type="date"
+            id="date"
+            required
+        >
+
+
+        <label>Payment Type</label>
+
+        <select id="paymentType" required>
+
+            <option value="">
+                Select Payment Type
+            </option>
+
+            <option value="ONLINE">
+                Online
+            </option>
+
+            <option value="CASH">
+                Cash
+            </option>
+
+        </select>
+
+
+        <!-- ONLINE -->
+
+        <div id="onlineFields">
+
+            <label>Payment Screenshot</label>
+
+            <input
+                type="file"
+                id="screenshot"
+                accept="image/*"
+            >
+
+            <small>
+                Upload your payment screenshot
+            </small>
+
+        </div>
+
+
+        <!-- CASH -->
+
+        <div id="cashFields">
+
+            <label>Collected By</label>
+
+            <input
+                type="text"
+                id="collectorName"
+            >
+
+        </div>
+
+
+        <button type="submit">
+            Submit Donation
+        </button>
+
+    </form>
+
+
+    <div id="message"></div>
+
+</div>
+
+
+<script>
+
+const API_URL =
+    "https://15agz5zmy1.execute-api.ap-south-1.amazonaws.com/donations";
+
+
+const paymentType =
+    document.getElementById("paymentType");
+
+const cashFields =
+    document.getElementById("cashFields");
+
+const onlineFields =
+    document.getElementById("onlineFields");
+
+const screenshot =
+    document.getElementById("screenshot");
+
+
+// Payment type change
+
+paymentType.addEventListener("change", function () {
+
+    if (this.value === "CASH") {
+
+        cashFields.style.display = "block";
+
+        onlineFields.style.display = "none";
+
+        screenshot.required = false;
+
+    }
+
+    else if (this.value === "ONLINE") {
+
+        cashFields.style.display = "none";
+
+        onlineFields.style.display = "block";
+
+        screenshot.required = true;
+
+    }
+
+    else {
+
+        cashFields.style.display = "none";
+
+        onlineFields.style.display = "none";
+
+        screenshot.required = false;
+
+    }
+
+});
+
+
+// Convert image to Base64
+
+function convertImageToBase64(file) {
+
+    return new Promise((resolve, reject) => {
+
+        const reader = new FileReader();
+
+        reader.onload = () => {
+
+            resolve(reader.result);
+
+        };
+
+        reader.onerror = reject;
+
+        reader.readAsDataURL(file);
+
+    });
+
+}
+
+
+// Submit form
+
+document
+    .getElementById("donationForm")
+    .addEventListener("submit", async function(event) {
+
+        event.preventDefault();
+
+
+        const donorName =
+            document.getElementById("donorName").value;
+
+        const email =
+            document.getElementById("email").value;
+
+        const amount =
+            document.getElementById("amount").value;
+
+        const date =
+            document.getElementById("date").value;
+
+        const type =
+            document.getElementById("paymentType").value;
+
+        const collectorName =
+            document.getElementById("collectorName").value;
+
+
+        const message =
+            document.getElementById("message");
+
+
+        message.innerText = "Submitting...";
+
+
+        try {
+
+            let screenshotBase64 = null;
+
+
+            // If ONLINE, convert image
+
+            if (type === "ONLINE") {
+
+                const file =
+                    screenshot.files[0];
+
+
+                if (!file) {
+
+                    message.innerText =
+                        "❌ Please upload payment screenshot.";
+
+                    return;
+
+                }
+
+
+                // Simple size check
+
+                if (file.size > 6 * 1024 * 1024) {
+
+                    message.innerText =
+                        "❌ Image must be smaller than 6 MB.";
+
+                    return;
+
+                }
+
+
+                screenshotBase64 =
+                    await convertImageToBase64(file);
+
+            }
+
+
+            const data = {
+
+                donorName: donorName,
+
+                email: email,
+
+                amount: Number(amount),
+
+                date: date,
+
+                paymentType: type,
+
+                collectorName: collectorName,
+
+                screenshot: screenshotBase64
+
+            };
+
+
+            const response =
+                await fetch(API_URL, {
+
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+
+                    body: JSON.stringify(data)
+
+                });
+
+
+            const result =
+                await response.json();
+
+
+            if (result.success) {
+
+                message.innerText =
+                    "✅ Donation submitted! Donation ID: "
+                    + result.donationId;
+
+
+                document
+                    .getElementById("donationForm")
+                    .reset();
+
+
+                cashFields.style.display = "none";
+
+                onlineFields.style.display = "none";
+
+            }
+
+            else {
+
+                message.innerText =
+                    "❌ " + result.error;
+
+            }
+
+        }
+
+        catch (error) {
+
+            console.error(error);
+
+            message.innerText =
+                "❌ Something went wrong.";
+
+        }
+
+    });
+
+</script>
+
+</body>
+
+</html>

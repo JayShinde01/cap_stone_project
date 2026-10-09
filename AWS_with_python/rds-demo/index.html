@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OrderFlow | Order Management</title>
+<style>
+:root{--bg:#f5f7fb;--surface:#fff;--text:#172033;--muted:#6b7485;--border:#e5e9f0;--primary:#3157d5;--primary2:#2444ad;--green:#16845b;--red:#c53030;--shadow:0 10px 30px rgba(23,32,51,.07);--radius:18px}
+*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;background:var(--bg);color:var(--text)}
+button,input,select{font:inherit}button{cursor:pointer}.app{min-height:100vh}
+.sidebar{position:fixed;left:0;top:0;bottom:0;width:250px;background:#111827;color:#fff;padding:24px 16px;z-index:30;transition:.25s}
+.brand{display:flex;align-items:center;gap:12px;padding:4px 10px 28px;font-size:20px;font-weight:800}.logo{width:38px;height:38px;border-radius:12px;background:var(--primary);display:grid;place-items:center}
+.nav{display:grid;gap:7px}.nav button{border:0;background:transparent;color:#aeb7c8;text-align:left;padding:13px 14px;border-radius:11px;width:100%;font-weight:600}.nav button:hover,.nav button.active{background:#202b40;color:#fff}
+.note{position:absolute;bottom:25px;left:20px;right:20px;color:#8490a5;font-size:12px;line-height:1.5}
+.main{margin-left:250px;padding:28px;max-width:1700px}.topbar{display:flex;align-items:center;justify-content:space-between;gap:18px;margin-bottom:25px}.topbar h1{margin:0;font-size:28px}.topbar p{margin:5px 0 0;color:var(--muted)}
+.actions{display:flex;gap:10px}.btn{border:1px solid var(--border);background:#fff;color:var(--text);padding:10px 15px;border-radius:11px;font-weight:700}.btn.primary{background:var(--primary);border-color:var(--primary);color:#fff}.btn.primary:hover{background:var(--primary2)}.btn:disabled{opacity:.55;cursor:not-allowed}
+.menu{display:none;width:42px;height:42px;border:1px solid var(--border);background:#fff;border-radius:11px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow)}.view{display:none}.view.active{display:block}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:20px}.stat{padding:20px}.stat-top{display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:13px;font-weight:700}.icon{width:38px;height:38px;border-radius:11px;background:#eef2ff;display:grid;place-items:center}.value{font-size:28px;font-weight:800;margin-top:13px}.sub{font-size:12px;color:var(--muted);margin-top:5px}
+.two{display:grid;grid-template-columns:1.4fr 1fr;gap:18px;margin-bottom:20px}.panel{padding:20px}.head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px}.head h2{margin:0;font-size:17px}.muted{color:var(--muted)}
+.popular{display:flex;justify-content:space-between;align-items:center;background:#f7f8ff;padding:18px;border-radius:14px}.popular-name{font-size:20px;font-weight:800}.popular-qty{font-size:13px;color:var(--muted);margin-top:5px}
+.statuses{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.status-box{padding:14px;border:1px solid var(--border);border-radius:14px}.status-box strong{display:block;font-size:22px;margin-top:7px}
+.badge{display:inline-flex;padding:5px 9px;border-radius:999px;font-size:11px;font-weight:800}.PENDING{background:#fff7df;color:#946200}.PROCESSING{background:#e8f1ff;color:#2554a6}.COMPLETED{background:#e7f8f0;color:#11734e}.CANCELLED{background:#fdeaea;color:#a32929}
+.table-panel{overflow:hidden}.toolbar{display:flex;gap:10px;flex-wrap:wrap}.search{border:1px solid var(--border);border-radius:10px;padding:10px 12px;min-width:230px;outline:0}.search:focus,input:focus,select:focus{border-color:var(--primary)}
+.table-wrap{overflow:auto}table{width:100%;border-collapse:collapse;min-width:850px}th,td{padding:14px 16px;text-align:left;border-bottom:1px solid var(--border);font-size:13px;white-space:nowrap}th{background:#fafbfc;color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.05em}
+.loading,.empty{text-align:center;padding:30px;color:var(--muted)}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}.field{display:grid;gap:7px}.field label{font-size:13px;font-weight:700}.field input,.field select{width:100%;border:1px solid var(--border);padding:12px;border-radius:11px;outline:0;background:#fff}
+.form-actions{display:flex;justify-content:flex-end;margin-top:20px}.message{display:none;margin-top:15px;padding:12px;border-radius:11px;font-size:13px}.message.show{display:block}.message.success{background:#e9f8f1;color:#126d4b}.message.error{background:#fdecec;color:#a52c2c}
+.products{display:grid;grid-template-columns:repeat(3,1fr);gap:15px}.product{padding:18px}.product h3{margin:0 0 8px;font-size:16px}.price{font-size:21px;font-weight:800}.stock{margin-top:10px;font-size:12px;color:var(--muted)}
+.product-actions{margin-top:14px;display:flex;gap:8px}.qty-input{width:75px!important;padding:9px!important}.cart{margin-top:20px;padding:20px}.cart-row{display:grid;grid-template-columns:1.5fr .7fr .7fr .7fr auto;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--border)}.cart-controls{display:flex;align-items:center;gap:8px}.mini{width:32px;height:32px;border:1px solid var(--border);background:#fff;border-radius:8px}.cart-total{display:flex;justify-content:space-between;align-items:center;margin-top:18px;font-size:18px;font-weight:800}
+.filter-bar{display:flex;gap:10px;flex-wrap:wrap;align-items:end;margin-bottom:18px}.filter-bar .field{min-width:150px}.top-items{display:grid;gap:10px}.top-item{display:flex;justify-content:space-between;padding:12px 14px;border:1px solid var(--border);border-radius:12px}
+.footer{font-size:12px;color:var(--muted);margin-top:20px}
+@media(max-width:1100px){.stats{grid-template-columns:repeat(2,1fr)}.two{grid-template-columns:1fr}.products{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:760px){.sidebar{transform:translateX(-100%)}.sidebar.open{transform:translateX(0)}.main{margin-left:0;padding:18px}.menu{display:block}.actions{display:none}.topbar{align-items:flex-start}.topbar h1{font-size:22px}.form-grid{grid-template-columns:1fr}.products{grid-template-columns:1fr}.panel{padding:15px}.cart-row{grid-template-columns:1fr 1fr}.cart-row>div:nth-child(3),.cart-row>div:nth-child(4){text-align:right}}
+@media(max-width:430px){.stats{grid-template-columns:1fr}.search{width:100%;min-width:100%}}
+</style>
+</head>
+<body>
+<aside class="sidebar" id="sidebar">
+<div class="brand"><div class="logo">📦</div><span>OrderFlow</span></div>
+<nav class="nav">
+<button class="active" data-view="dashboard">📊 Dashboard</button>
+<button data-view="orders">🧾 Orders</button>
+<button data-view="products">🛍️ Products</button>
+<button data-view="create">➕ Create Order</button>
+</nav>
+<div class="note">Serverless Order Management<br>AWS Lambda · API Gateway · RDS</div>
+</aside>
+
+<main class="main">
+<header class="topbar">
+<div style="display:flex;gap:12px;align-items:flex-start">
+<button class="menu" id="menuBtn">☰</button>
+<div><h1 id="pageTitle">Order Dashboard</h1><p>Monitor orders, revenue and popular products.</p></div>
+</div>
+<div class="actions"><button class="btn" onclick="loadAll()">↻ Refresh</button><button class="btn primary" onclick="showView('create')">+ New Order</button></div>
+</header>
+
+<section id="dashboard" class="view active">
+<div class="stats">
+<div class="card stat"><div class="stat-top"><span>Total Orders</span><span class="icon">🧾</span></div><div class="value" id="totalOrders">—</div><div class="sub">Orders in selected period</div></div>
+<div class="card stat"><div class="stat-top"><span>Total Revenue</span><span class="icon">₹</span></div><div class="value" id="totalRevenue">—</div><div class="sub">Combined order value</div></div>
+<div class="card stat"><div class="stat-top"><span>Popular Item</span><span class="icon">🔥</span></div><div class="value" id="popularItem" style="font-size:20px">—</div><div class="sub" id="popularQty">—</div></div>
+<div class="card stat"><div class="stat-top"><span>Last Updated</span><span class="icon">⏱</span></div><div class="value" id="lastUpdated" style="font-size:20px">—</div><div class="sub">Live from API</div></div>
+</div>
+
+<div class="card panel" style="margin-bottom:20px">
+<div class="head"><h2>Popularity Filter</h2><span class="muted">Filter orders by date</span></div>
+<div class="filter-bar">
+<div class="field"><label>Period</label><select id="periodFilter" onchange="handlePeriodChange()">
+<option value="all">All Time</option><option value="today">Today</option><option value="yesterday">Yesterday</option><option value="7days">Last 7 Days</option><option value="30days">Last 30 Days</option><option value="month">This Month</option><option value="custom">Custom Date</option>
+</select></div>
+<div class="field" id="fromWrap" style="display:none"><label>From</label><input type="date" id="fromDate"></div>
+<div class="field" id="toWrap" style="display:none"><label>To</label><input type="date" id="toDate"></div>
+<button class="btn primary" onclick="loadFilteredDashboard()">Apply</button>
+</div>
+</div>
+
+<div class="two">
+<div class="card panel"><div class="head"><h2>Most Popular Product</h2><span class="muted">By quantity sold</span></div>
+<div class="popular"><div><div class="popular-name" id="popularName">Loading...</div><div class="popular-qty" id="popularDetail">Calculating...</div></div><div style="font-size:32px">🔥</div></div></div>
+<div class="card panel"><div class="head"><h2>Order Status</h2></div>
+<div class="statuses"><div class="status-box"><span class="badge PENDING">PENDING</span><strong id="pendingCount">0</strong></div><div class="status-box"><span class="badge PROCESSING">PROCESSING</span><strong id="processingCount">0</strong></div><div class="status-box"><span class="badge COMPLETED">COMPLETED</span><strong id="completedCount">0</strong></div></div></div>
+</div>
+
+<div class="card panel" style="margin-bottom:20px"><div class="head"><h2>Top 5 Popular Items</h2></div><div id="topItems" class="top-items"><div class="loading">Loading...</div></div></div>
+
+<div class="card table-panel"><div class="panel"><div class="head"><h2>Recent Orders</h2><button class="btn" onclick="showView('orders')">View all</button></div></div><div id="recentOrders" class="loading">Loading orders...</div></div>
+<div class="footer">Data flows through API Gateway → Lambda → MySQL RDS.</div>
+</section>
+
+<section id="orders" class="view">
+<div class="card table-panel"><div class="panel"><div class="head"><h2>All Orders</h2><input id="orderSearch" class="search" placeholder="Search order, customer or product..." oninput="filterOrders()"></div><div id="ordersTable" class="loading">Loading orders...</div></div></div>
+</section>
+
+<section id="products" class="view">
+<div class="card panel"><div class="head"><h2>Products</h2><span class="muted">Inventory from RDS</span></div><div id="productsGrid" class="products"><div class="loading">Loading products...</div></div></div>
+</section>
+
+<section id="create" class="view">
+<div class="card panel">
+<div class="head"><h2>Create New Order</h2><span class="muted">Add multiple products to one order</span></div>
+<div class="form-grid">
+<div class="field"><label>Customer ID</label><input id="customerId" type="number" min="1" placeholder="e.g. 1"></div>
+<div class="field"><label>Product</label><select id="productId"><option value="">Loading products...</option></select></div>
+<div class="field"><label>Quantity</label><input id="quantity" type="number" min="1" value="1"></div>
+<div class="field" style="align-self:end"><button class="btn" type="button" onclick="addSelectedToCart()">+ Add Product to Order</button></div>
+</div>
+
+<div class="card cart" id="cartBox">
+<div class="head"><h2>Order Cart</h2><button class="btn" type="button" onclick="clearCart()">Clear</button></div>
+<div id="cartItems"><div class="empty">No products added yet.</div></div>
+<div class="cart-total"><span>Grand Total</span><span id="cartTotal">₹0.00</span></div>
+</div>
+
+<div id="orderMessage" class="message"></div>
+<div class="form-actions"><button class="btn primary" id="createBtn" type="button" onclick="createOrder()">Place Order</button></div>
+</div>
+</section>
+</main>
+
+<script>
+"use strict";
+
+const API_BASE_URL = "https://c8qgdu6843.execute-api.ap-south-1.amazonaws.com";
+
+let allOrders = [];
+let allProducts = [];
+let cart = [];
+
+const $ = id => document.getElementById(id);
+
+function apiUrl(path){
+    return API_BASE_URL.replace(/\/+$/, "") + path;
+}
+
+async function apiFetch(path, options = {}){
+    const config = {...options};
+    config.headers = {"Content-Type":"application/json", ...(options.headers || {})};
+
+    let response;
+    try {
+        response = await fetch(apiUrl(path), config);
+    } catch(error) {
+        throw new Error("Cannot connect to API. Check API Gateway URL, CORS and internet connection.");
+    }
+
+    const text = await response.text();
+    let data = {};
+    try { data = text ? JSON.parse(text) : {}; } catch(e) { data = {message:text}; }
+
+    if(!response.ok){
+        throw new Error(data.message || data.error || `Request failed (${response.status})`);
+    }
+    return data;
+}
+
+function money(v){
+    return new Intl.NumberFormat("en-IN",{style:"currency",currency:"INR",maximumFractionDigits:2}).format(Number(v || 0));
+}
+
+function esc(v){
+    return String(v ?? "").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]));
+}
+
+function date(v){
+    if(!v) return "—";
+    const d = new Date(v);
+    return isNaN(d.getTime()) ? String(v) : d.toLocaleString("en-IN",{dateStyle:"medium",timeStyle:"short"});
+}
+
+function showMessage(type,text){
+    const box=$("orderMessage");
+    box.className=`message ${type} show`;
+    box.textContent=text;
+}
+
+function showView(view){
+    document.querySelectorAll(".view").forEach(x=>x.classList.remove("active"));
+    $(view).classList.add("active");
+    document.querySelectorAll(".nav button").forEach(x=>x.classList.toggle("active",x.dataset.view===view));
+    $("pageTitle").textContent={dashboard:"Order Dashboard",orders:"Order Management",products:"Products",create:"Create New Order"}[view];
+    $("sidebar").classList.remove("open");
+
+    if(view==="orders") loadOrders();
+    if(view==="products") loadProducts();
+}
+
+document.querySelectorAll(".nav button").forEach(x=>x.addEventListener("click",()=>showView(x.dataset.view)));
+$("menuBtn").addEventListener("click",()=>$("sidebar").classList.toggle("open"));
+
+async function loadDashboard(query=""){
+    try{
+        const d=await apiFetch("/dashboard"+query);
+
+        $("totalOrders").textContent=d.totalOrders ?? 0;
+        $("totalRevenue").textContent=money(d.totalRevenue);
+        $("popularItem").textContent=d.mostPopularItem || "—";
+        $("popularQty").textContent=`${d.popularItemQuantity || 0} units sold`;
+        $("popularName").textContent=d.mostPopularItem || "No data";
+        $("popularDetail").textContent=`${d.popularItemQuantity || 0} units sold`;
+        $("lastUpdated").textContent=new Date().toLocaleTimeString("en-IN",{hour:"2-digit",minute:"2-digit"});
+
+        const s=d.status || {};
+        $("pendingCount").textContent=s.PENDING || 0;
+        $("processingCount").textContent=s.PROCESSING || 0;
+        $("completedCount").textContent=s.COMPLETED || 0;
+
+        const items=d.topItems || [];
+        $("topItems").innerHTML=items.length
+            ? items.map((x,i)=>`<div class="top-item"><span><strong>${i+1}. ${esc(x.product_name || x.productName || "Unknown")}</strong></span><span>${esc(x.quantity || x.total_quantity || 0)} units</span></div>`).join("")
+            : '<div class="empty">No popularity data for this period.</div>';
+    }catch(e){
+        console.error("Dashboard error:",e);
+        $("totalOrders").textContent="Error";
+        $("popularName").textContent="Unable to load";
+        $("topItems").innerHTML=`<div class="empty">${esc(e.message)}</div>`;
+    }
+}
+
+async function loadFilteredDashboard(){
+    const period=$("periodFilter").value;
+    let query=`?period=${encodeURIComponent(period)}`;
+
+    if(period==="custom"){
+        const from=$("fromDate").value;
+        const to=$("toDate").value;
+        if(!from || !to){ alert("Please select From and To dates."); return; }
+        if(from>to){ alert("From date cannot be after To date."); return; }
+        query+=`&from=${encodeURIComponent(from)}&to=${encodeURIComponent(to)}`;
+    }
+
+    await loadDashboard(query);
+}
+
+function handlePeriodChange(){
+    const custom=$("periodFilter").value==="custom";
+    $("fromWrap").style.display=custom?"grid":"none";
+    $("toWrap").style.display=custom?"grid":"none";
+}
+
+async function loadOrders(){
+    $("ordersTable").innerHTML='<div class="loading">Loading orders...</div>';
+    try{
+        const d=await apiFetch("/orders");
+        allOrders=d.orders || [];
+        renderOrders(allOrders);
+        renderRecentOrders(allOrders);
+    }catch(e){
+        console.error("Orders error:",e);
+        $("ordersTable").innerHTML=`<div class="empty">${esc(e.message)}</div>`;
+    }
+}
+
+function getOrderItems(o){
+    if(Array.isArray(o.items) && o.items.length) return o.items;
+    if(o.product_name) return [{product_name:o.product_name,quantity:o.quantity,total_amount:o.total_amount}];
+    return [];
+}
+
+function renderOrders(list){
+    if(!list.length){$("ordersTable").innerHTML='<div class="empty">No orders found.</div>';return;}
+    $("ordersTable").innerHTML=`<div class="table-wrap"><table>
+    <thead><tr><th>Order</th><th>Customer</th><th>Items</th><th>Total</th><th>Status</th><th>Date</th></tr></thead>
+    <tbody>${list.map(o=>{
+        const items=getOrderItems(o);
+        return `<tr>
+        <td>#${esc(o.order_id)}</td>
+        <td><strong>${esc(o.customer_name || "")}</strong><br><span class="muted">${esc(o.phone || o.email || "")}</span></td>
+        <td>${items.map(i=>`${esc(i.product_name || "Product")} × ${esc(i.quantity || 0)}`).join("<br>")}</td>
+        <td><strong>${money(o.total_amount)}</strong></td>
+        <td><span class="badge ${esc(o.status)}">${esc(o.status)}</span></td>
+        <td>${date(o.order_date)}</td>
+        </tr>`;
+    }).join("")}</tbody></table></div>`;
+}
+
+function renderRecentOrders(list){
+    const x=list.slice(0,5);
+    $("recentOrders").innerHTML=x.length
+        ? `<div class="table-wrap"><table><thead><tr><th>Order</th><th>Customer</th><th>Items</th><th>Total</th><th>Status</th></tr></thead><tbody>${x.map(o=>{
+            const items=getOrderItems(o);
+            return `<tr><td>#${esc(o.order_id)}</td><td>${esc(o.customer_name||"")}</td><td>${items.map(i=>`${esc(i.product_name||"Product")} × ${esc(i.quantity||0)}`).join("<br>")}</td><td>${money(o.total_amount)}</td><td><span class="badge ${esc(o.status)}">${esc(o.status)}</span></td></tr>`;
+        }).join("")}</tbody></table></div>`
+        : '<div class="empty">No orders yet.</div>';
+}
+
+function filterOrders(){
+    const q=$("orderSearch").value.toLowerCase().trim();
+    renderOrders(allOrders.filter(o=>{
+        const items=getOrderItems(o).map(i=>i.product_name||"").join(" ");
+        return [o.order_id,o.customer_name,o.status,items].some(v=>String(v??"").toLowerCase().includes(q));
+    }));
+}
+
+async function loadProducts(){
+    $("productsGrid").innerHTML='<div class="loading">Loading products...</div>';
+    try{
+        const d=await apiFetch("/products");
+        allProducts=d.products || [];
+
+        $("productsGrid").innerHTML=allProducts.length
+            ? allProducts.map(p=>`<div class="card product">
+                <h3>${esc(p.product_name)}</h3>
+                <div class="price">${money(p.price)}</div>
+                <div class="stock">Stock available: <strong>${esc(p.stock_quantity)}</strong></div>
+                <div class="product-actions">
+                    <input class="qty-input" id="prodQty_${esc(p.product_id)}" type="number" min="1" value="1">
+                    <button class="btn primary" type="button" onclick="addProductById(${Number(p.product_id)})">+ Add</button>
+                </div>
+              </div>`).join("")
+            : '<div class="empty">No products found.</div>';
+
+        $("productId").innerHTML='<option value="">Select a product</option>'+
+            allProducts.map(p=>`<option value="${esc(p.product_id)}">${esc(p.product_name)} — ${money(p.price)} (${esc(p.stock_quantity)} left)</option>`).join("");
+    }catch(e){
+        console.error("Products error:",e);
+        $("productsGrid").innerHTML=`<div class="empty">${esc(e.message)}</div>`;
+        $("productId").innerHTML='<option value="">Unable to load products</option>';
+    }
+}
+
+function addProductToCart(product,qty){
+    qty=Number(qty);
+    if(!product || !qty || qty<1){alert("Please select a valid product and quantity.");return;}
+
+    const existing=cart.find(x=>Number(x.product_id)===Number(product.product_id));
+    const newQty=(existing?existing.quantity:0)+qty;
+
+    if(newQty>Number(product.stock_quantity)){
+        alert(`Only ${product.stock_quantity} units of ${product.product_name} are available.`);
+        return;
+    }
+
+    if(existing) existing.quantity=newQty;
+    else cart.push({
+        product_id:Number(product.product_id),
+        product_name:product.product_name,
+        price:Number(product.price),
+        quantity:qty,
+        stock_quantity:Number(product.stock_quantity)
+    });
+
+    renderCart();
+}
+
+function addProductById(id){
+    const product=allProducts.find(p=>Number(p.product_id)===Number(id));
+    const input=$(`prodQty_${id}`);
+    addProductToCart(product,Number(input?.value||1));
+}
+
+function addSelectedToCart(){
+    const pid=Number($("productId").value);
+    const qty=Number($("quantity").value);
+    const product=allProducts.find(p=>Number(p.product_id)===pid);
+    addProductToCart(product,qty);
+}
+
+function changeCartQty(id,delta){
+    const item=cart.find(x=>Number(x.product_id)===Number(id));
+    if(!item)return;
+
+    const next=item.quantity+delta;
+    if(next<1){removeFromCart(id);return;}
+    if(next>item.stock_quantity){alert(`Only ${item.stock_quantity} units available.`);return;}
+
+    item.quantity=next;
+    renderCart();
+}
+
+function removeFromCart(id){
+    cart=cart.filter(x=>Number(x.product_id)!==Number(id));
+    renderCart();
+}
+
+function clearCart(){
+    cart=[];
+    renderCart();
+}
+
+function renderCart(){
+    if(!cart.length){
+        $("cartItems").innerHTML='<div class="empty">No products added yet.</div>';
+        $("cartTotal").textContent=money(0);
+        return;
+    }
+
+    $("cartItems").innerHTML=cart.map(item=>`
+        <div class="cart-row">
+            <div><strong>${esc(item.product_name)}</strong><br><span class="muted">${money(item.price)} each</span></div>
+            <div class="cart-controls">
+                <button class="mini" type="button" onclick="changeCartQty(${item.product_id},-1)">−</button>
+                <strong>${item.quantity}</strong>
+                <button class="mini" type="button" onclick="changeCartQty(${item.product_id},1)">+</button>
+            </div>
+            <div>${money(item.price*item.quantity)}</div>
+            <div>${item.quantity} unit${item.quantity===1?"":"s"}</div>
+            <button class="mini" type="button" onclick="removeFromCart(${item.product_id})">✕</button>
+        </div>`).join("");
+
+    const total=cart.reduce((sum,x)=>sum+(x.price*x.quantity),0);
+    $("cartTotal").textContent=money(total);
+}
+
+async function createOrder(){
+    const cid=Number($("customerId").value);
+
+    $("orderMessage").className="message";
+    $("orderMessage").textContent="";
+
+    if(!cid){
+        showMessage("error","Please enter a valid Customer ID.");
+        return;
+    }
+
+    if(!cart.length){
+        showMessage("error","Please add at least one product to the order.");
+        return;
+    }
+
+    const items=cart.map(x=>({
+        product_id:Number(x.product_id),
+        quantity:Number(x.quantity)
+    }));
+
+    const payload={customer_id:cid,items};
+
+    console.log("Placing order:",payload);
+
+    const button=$("createBtn");
+    button.disabled=true;
+    button.textContent="Placing Order...";
+
+    try{
+        const d=await apiFetch("/orders",{
+            method:"POST",
+            body:JSON.stringify(payload)
+        });
+
+        console.log("Order response:",d);
+
+        const orderId=d.orderId ?? d.order_id ?? "—";
+        const total=d.totalAmount ?? d.total_amount ?? d.grandTotal ?? 0;
+
+        showMessage("success",`Order #${orderId} created successfully — ${money(total)}.`);
+
+        cart=[];
+        renderCart();
+        $("customerId").value="";
+        $("quantity").value=1;
+        $("productId").value="";
+
+        await Promise.all([loadDashboard(),loadOrders(),loadProducts()]);
+    }catch(e){
+        console.error("Create order error:",e);
+        showMessage("error",`Order failed: ${e.message}`);
+    }finally{
+        button.disabled=false;
+        button.textContent="Place Order";
+    }
+}
+
+async function loadAll(){
+    await Promise.all([loadDashboard(),loadOrders(),loadProducts()]);
+}
+
+renderCart();
+loadAll();
+setInterval(loadDashboard,60000);
+</script>
+</body>
+</html>

@@ -1,0 +1,1096 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Cloud Photo Gallery</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f8;
+            color: #222;
+            min-height: 100vh;
+        }
+
+        /* =========================
+           HEADER
+        ========================= */
+
+        header {
+            background: #111827;
+            color: white;
+            padding: 25px 20px;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+
+        header p {
+            color: #d1d5db;
+            font-size: 15px;
+        }
+
+
+        /* =========================
+           MAIN CONTAINER
+        ========================= */
+
+        .container {
+            max-width: 1100px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+
+        /* =========================
+           UPLOAD BOX
+        ========================= */
+
+        .upload-card {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .upload-card h2 {
+            margin-bottom: 10px;
+        }
+
+        .upload-card p {
+            color: #6b7280;
+            margin-bottom: 20px;
+        }
+
+        .file-input {
+            display: inline-block;
+            margin-bottom: 15px;
+        }
+
+        .upload-button {
+            display: block;
+            margin: auto;
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 15px;
+            transition: 0.2s;
+        }
+
+        .upload-button:hover {
+            background: #1d4ed8;
+        }
+
+        .upload-button:disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
+        }
+
+
+        /* =========================
+           STATUS
+        ========================= */
+
+        #status {
+            margin-top: 15px;
+            font-weight: bold;
+        }
+
+
+        /* =========================
+           GALLERY HEADER
+        ========================= */
+
+        .gallery-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .gallery-header h2 {
+            font-size: 24px;
+        }
+
+        .refresh-button {
+            background: white;
+            border: 1px solid #d1d5db;
+            padding: 8px 15px;
+            border-radius: 7px;
+            cursor: pointer;
+        }
+
+        .refresh-button:hover {
+            background: #f3f4f6;
+        }
+
+
+        /* =========================
+           PHOTO GRID
+        ========================= */
+
+        .photo-grid {
+            display: grid;
+            grid-template-columns:
+                repeat(auto-fill, minmax(250px, 1fr));
+            gap: 25px;
+        }
+
+
+        /* =========================
+           PHOTO CARD
+        ========================= */
+
+        .photo-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow:
+                0 4px 15px rgba(0, 0, 0, 0.08);
+            transition: transform 0.2s;
+        }
+
+        .photo-card:hover {
+            transform: translateY(-4px);
+        }
+
+        .photo-card img {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+            display: block;
+            background: #e5e7eb;
+        }
+
+        .photo-info {
+            padding: 15px;
+        }
+
+        .photo-name {
+            font-size: 14px;
+            color: #374151;
+            margin-bottom: 12px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .delete-button {
+            width: 100%;
+            background: #dc2626;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 7px;
+            cursor: pointer;
+        }
+
+        .delete-button:hover {
+            background: #b91c1c;
+        }
+
+
+        /* =========================
+           EMPTY STATE
+        ========================= */
+
+        .empty-state {
+            text-align: center;
+            background: white;
+            padding: 50px 20px;
+            border-radius: 12px;
+            color: #6b7280;
+        }
+
+        .empty-state .icon {
+            font-size: 50px;
+            margin-bottom: 15px;
+        }
+
+
+        /* =========================
+           LOADING
+        ========================= */
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #6b7280;
+        }
+
+
+        /* =========================
+           ERROR
+        ========================= */
+
+        .error-state {
+            text-align: center;
+            background: white;
+            padding: 40px 20px;
+            border-radius: 12px;
+            color: #dc2626;
+        }
+
+        .error-state .icon {
+            font-size: 45px;
+            margin-bottom: 15px;
+        }
+
+
+        /* =========================
+           MOBILE
+        ========================= */
+
+        @media (max-width: 600px) {
+
+            header h1 {
+                font-size: 25px;
+            }
+
+            .container {
+                margin-top: 25px;
+            }
+
+            .upload-card {
+                padding: 20px;
+            }
+
+            .gallery-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+
+            .photo-grid {
+                grid-template-columns: 1fr;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- =========================
+         HEADER
+    ========================== -->
+
+    <header>
+
+        <h1>📸 Cloud Photo Gallery</h1>
+
+        <p>
+            Upload and manage your photos using AWS
+        </p>
+
+    </header>
+
+
+    <!-- =========================
+         MAIN
+    ========================== -->
+
+    <div class="container">
+
+
+        <!-- =========================
+             UPLOAD
+        ========================== -->
+
+        <div class="upload-card">
+
+            <h2>Upload a Photo</h2>
+
+            <p>
+                Select an image from your device
+            </p>
+
+            <input
+                type="file"
+                id="photoInput"
+                class="file-input"
+                accept="image/*"
+            >
+
+            <button
+                id="uploadButton"
+                class="upload-button"
+                onclick="uploadPhoto()"
+            >
+                Upload Photo
+            </button>
+
+            <p id="status"></p>
+
+        </div>
+
+
+        <!-- =========================
+             GALLERY HEADER
+        ========================== -->
+
+        <div class="gallery-header">
+
+            <h2>🖼️ All Photos</h2>
+
+            <button
+                class="refresh-button"
+                onclick="loadPhotos()"
+            >
+                🔄 Refresh
+            </button>
+
+        </div>
+
+
+        <!-- =========================
+             PHOTOS
+        ========================== -->
+
+        <div
+            id="photos"
+            class="photo-grid"
+        >
+
+        </div>
+
+
+    </div>
+
+
+    <script>
+
+        // ==========================================
+        // API GATEWAY URL
+        // ==========================================
+
+        const API_URL =
+            "https://kctxdzi1qk.execute-api.ap-south-1.amazonaws.com";
+
+
+        // ==========================================
+        // UPLOAD PHOTO
+        // ==========================================
+
+        async function uploadPhoto() {
+
+            const input =
+                document.getElementById("photoInput");
+
+            const button =
+                document.getElementById("uploadButton");
+
+            const status =
+                document.getElementById("status");
+
+
+            const file =
+                input.files[0];
+
+
+            // Check file selected
+
+            if (!file) {
+
+                status.innerText =
+                    "⚠️ Please select an image first.";
+
+                status.style.color =
+                    "#dc2626";
+
+                return;
+            }
+
+
+            // Check image type
+
+            if (!file.type.startsWith("image/")) {
+
+                status.innerText =
+                    "⚠️ Please select an image file.";
+
+                status.style.color =
+                    "#dc2626";
+
+                return;
+            }
+
+
+            // Optional file size check
+            // 8 MB limit for this frontend
+
+            const maxSize =
+                8 * 1024 * 1024;
+
+            if (file.size > maxSize) {
+
+                status.innerText =
+                    "⚠️ Image must be smaller than 8 MB.";
+
+                status.style.color =
+                    "#dc2626";
+
+                return;
+            }
+
+
+            // Disable button
+
+            button.disabled = true;
+
+            button.innerText =
+                "Uploading...";
+
+
+            status.innerText =
+                "Uploading your photo...";
+
+            status.style.color =
+                "#2563eb";
+
+
+            try {
+
+                // Convert image to Base64
+
+                const base64 =
+                    await fileToBase64(file);
+
+
+                // Create request object
+
+                const data = {
+
+                    fileName:
+                        file.name,
+
+                    contentType:
+                        file.type,
+
+                    file:
+                        base64.split(",")[1]
+
+                };
+
+
+                console.log(
+                    "Uploading:",
+                    {
+                        fileName: data.fileName,
+                        contentType: data.contentType
+                    }
+                );
+
+
+                // Send POST request
+
+                const response =
+                    await fetch(
+                        `${API_URL}/photos`,
+                        {
+
+                            method: "POST",
+
+                            headers: {
+
+                                "Content-Type":
+                                    "application/json"
+
+                            },
+
+                            body:
+                                JSON.stringify(data)
+
+                        }
+                    );
+
+
+                // Convert response to JSON
+
+                const result =
+                    await response.json();
+
+
+                console.log(
+                    "Upload response:",
+                    result
+                );
+
+
+                // Check response
+
+                if (response.ok) {
+
+                    status.innerText =
+                        "✅ Photo uploaded successfully!";
+
+                    status.style.color =
+                        "#16a34a";
+
+
+                    // Clear file input
+
+                    input.value = "";
+
+
+                    // Refresh gallery
+
+                    await loadPhotos();
+
+                }
+
+                else {
+
+                    status.innerText =
+                        "❌ Upload failed.";
+
+                    status.style.color =
+                        "#dc2626";
+
+
+                    console.error(
+                        "Upload error:",
+                        result
+                    );
+
+                }
+
+
+            }
+
+            catch (error) {
+
+                console.error(
+                    "Upload error:",
+                    error
+                );
+
+                status.innerText =
+                    "❌ Something went wrong while uploading.";
+
+                status.style.color =
+                    "#dc2626";
+
+            }
+
+
+            finally {
+
+                button.disabled =
+                    false;
+
+                button.innerText =
+                    "Upload Photo";
+
+            }
+
+        }
+
+
+        // ==========================================
+        // FILE → BASE64
+        // ==========================================
+
+        function fileToBase64(file) {
+
+            return new Promise(
+                (resolve, reject) => {
+
+                    const reader =
+                        new FileReader();
+
+
+                    reader.onload =
+                        () => {
+
+                            resolve(
+                                reader.result
+                            );
+
+                        };
+
+
+                    reader.onerror =
+                        error => {
+
+                            reject(error);
+
+                        };
+
+
+                    reader.readAsDataURL(file);
+
+                }
+            );
+
+        }
+
+
+        // ==========================================
+        // GET ALL PHOTOS
+        // ==========================================
+
+        async function loadPhotos() {
+
+            const container =
+                document.getElementById("photos");
+
+
+            // Show loading
+
+            container.innerHTML =
+                `
+                    <div class="loading">
+
+                        <h3>
+                            Loading photos...
+                        </h3>
+
+                    </div>
+                `;
+
+
+            try {
+
+                // GET request
+
+                const response =
+                    await fetch(
+                        `${API_URL}/photos`
+                    );
+
+
+                console.log(
+                    "GET status:",
+                    response.status
+                );
+
+
+                // Read response
+
+                const data =
+                    await response.json();
+
+
+                console.log(
+                    "Photos:",
+                    data
+                );
+
+
+                // Check API error
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        data.error ||
+                        data.message ||
+                        "Failed to fetch photos"
+                    );
+
+                }
+
+
+                // Clear loading
+
+                container.innerHTML =
+                    "";
+
+
+                // Check photos
+
+                if (
+                    !data.photos ||
+                    data.photos.length === 0
+                ) {
+
+                    container.innerHTML =
+                        `
+                            <div class="empty-state">
+
+                                <div class="icon">
+                                    📷
+                                </div>
+
+                                <h3>
+                                    No photos yet
+                                </h3>
+
+                                <p>
+                                    Upload your first photo!
+                                </p>
+
+                            </div>
+                        `;
+
+                    return;
+                }
+
+
+                // Create photo cards
+
+                data.photos.forEach(
+                    photo => {
+
+                        createPhotoCard(
+                            photo,
+                            container
+                        );
+
+                    }
+                );
+
+
+            }
+
+            catch (error) {
+
+                console.error(
+                    "Error loading photos:",
+                    error
+                );
+
+
+                container.innerHTML =
+                    `
+                        <div class="error-state">
+
+                            <div class="icon">
+                                ⚠️
+                            </div>
+
+                            <h3>
+                                Failed to load photos
+                            </h3>
+
+                            <p>
+                                ${escapeHtml(error.message)}
+                            </p>
+
+                        </div>
+                    `;
+
+            }
+
+        }
+
+
+        // ==========================================
+        // CREATE PHOTO CARD
+        // ==========================================
+
+        function createPhotoCard(
+            photo,
+            container
+        ) {
+
+            const card =
+                document.createElement(
+                    "div"
+                );
+
+
+            card.className =
+                "photo-card";
+
+
+            // ==========================
+            // IMAGE
+            // ==========================
+
+            const img =
+                document.createElement(
+                    "img"
+                );
+
+
+            img.src =
+                photo.url;
+
+
+            img.alt =
+                photo.fileName ||
+                "Uploaded photo";
+
+
+            // Image error
+
+            img.onerror =
+                () => {
+
+                    console.error(
+                        "Image failed to load:",
+                        photo.url
+                    );
+
+                    img.alt =
+                        "Unable to load image";
+
+                    img.style.padding =
+                        "30px";
+
+                };
+
+
+            // ==========================
+            // INFO
+            // ==========================
+
+            const info =
+                document.createElement(
+                    "div"
+                );
+
+
+            info.className =
+                "photo-info";
+
+
+            // ==========================
+            // FILE NAME
+            // ==========================
+
+            const name =
+                document.createElement(
+                    "div"
+                );
+
+
+            name.className =
+                "photo-name";
+
+
+            name.innerText =
+                photo.fileName ||
+                "Unknown file";
+
+
+            // ==========================
+            // DELETE BUTTON
+            // ==========================
+
+            const deleteButton =
+                document.createElement(
+                    "button"
+                );
+
+
+            deleteButton.className =
+                "delete-button";
+
+
+            deleteButton.innerText =
+                "🗑️ Delete Photo";
+
+
+            // IMPORTANT:
+            // Lambda expects DynamoDB id,
+            // NOT S3 key.
+
+            deleteButton.onclick =
+                () => deletePhoto(
+                    photo.id
+                );
+
+
+            // Add elements
+
+            info.appendChild(
+                name
+            );
+
+            info.appendChild(
+                deleteButton
+            );
+
+
+            card.appendChild(
+                img
+            );
+
+            card.appendChild(
+                info
+            );
+
+
+            container.appendChild(
+                card
+            );
+
+        }
+
+
+        // ==========================================
+        // DELETE PHOTO
+        // ==========================================
+
+        async function deletePhoto(id) {
+
+            // Check ID
+
+            if (!id) {
+
+                alert(
+                    "Photo ID is missing."
+                );
+
+                return;
+            }
+
+
+            // Confirmation
+
+            const confirmation =
+                confirm(
+                    "Are you sure you want to delete this photo?"
+                );
+
+
+            if (!confirmation) {
+
+                return;
+
+            }
+
+
+            try {
+
+                // Encode ID
+
+                const encodedId =
+                    encodeURIComponent(id);
+
+
+                console.log(
+                    "Deleting photo:",
+                    id
+                );
+
+
+                // DELETE request
+
+                const response =
+                    await fetch(
+                        `${API_URL}/photos/${encodedId}`,
+                        {
+
+                            method: "DELETE"
+
+                        }
+                    );
+
+
+                // Read response
+
+                const result =
+                    await response.json();
+
+
+                console.log(
+                    "Delete response:",
+                    result
+                );
+
+
+                if (response.ok) {
+
+                    alert(
+                        "✅ Photo deleted successfully!"
+                    );
+
+
+                    // Refresh gallery
+
+                    await loadPhotos();
+
+                }
+
+                else {
+
+                    alert(
+                        "❌ Failed to delete photo: " +
+                        (
+                            result.error ||
+                            result.message ||
+                            "Unknown error"
+                        )
+                    );
+
+                }
+
+
+            }
+
+            catch (error) {
+
+                console.error(
+                    "Delete error:",
+                    error
+                );
+
+                alert(
+                    "❌ Something went wrong while deleting."
+                );
+
+            }
+
+        }
+
+
+        // ==========================================
+        // ESCAPE HTML
+        // ==========================================
+
+        function escapeHtml(text) {
+
+            const div =
+                document.createElement(
+                    "div"
+                );
+
+            div.innerText =
+                text;
+
+            return div.innerHTML;
+
+        }
+
+
+        // ==========================================
+        // INITIAL LOAD
+        // ==========================================
+
+        loadPhotos();
+
+    </script>
+
+
+</body>
+
+</html>
