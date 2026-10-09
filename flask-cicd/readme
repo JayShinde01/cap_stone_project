@@ -1,0 +1,266 @@
+# 🐳 Containerized Flask Application on AWS
+
+A hands-on cloud engineering project that demonstrates how to containerize a Python Flask REST API using Docker and deploy it on AWS using Amazon ECR and Amazon ECS. The project also explores automated deployment to an EC2 instance using GitHub Actions and SSH.
+
+## 🎯 Project Objective
+
+To develop a basic Flask application, package it into a Docker container, and understand the workflow for building, testing, storing, and deploying containerized applications on AWS.
+
+## 🛠️ Technologies Used
+
+| Technology | Purpose |
+|---|---|
+| Python | Application programming |
+| Flask | REST API development |
+| Gunicorn | Production WSGI server |
+| Docker | Containerizing the application |
+| Amazon ECR | Storing Docker images |
+| Amazon ECS | Running and managing containers |
+| Amazon EC2 | Virtual machine hosting and deployment experiments |
+| GitHub | Source code management |
+| GitHub Actions | Automating deployment workflows |
+| SSH | Secure remote deployment |
+| Linux Shell Script | Deployment automation |
+
+## 🏗️ Architecture
+
+```text
+             Developer
+                 |
+                 v
+           GitHub Repository
+                 |
+                 v
+          GitHub Actions
+                 |
+                 v
+          Automated Deployment
+                 |
+          +------+------+
+          |             |
+          v             v
+      Amazon EC2    Docker Image
+                         |
+                         v
+                    Amazon ECR
+                         |
+                         v
+                    Amazon ECS
+                         |
+                         v
+                   Flask API
+                         |
+                         v
+                  GET /health
+```
+
+**Note:** The EC2 deployment workflow and the ECR/ECS container deployment are separate deployment approaches. The GitHub Actions configuration provided uses SSH to execute `deploy.sh` on EC2; it does not itself demonstrate an ECR/ECS deployment.
+
+## 📁 Project Structure
+
+```text
+containerized-flask-app/
+├── app.py
+├── requirements.txt
+├── Dockerfile
+├── deploy.sh
+├── .dockerignore
+└── .github/
+    └── workflows/
+        └── deploy.yml
+```
+
+The exact files may vary depending on your implementation.
+
+## ⚙️ Application Details
+
+The project includes a simple Flask API with a health-check endpoint.
+
+**Endpoint**
+
+```http
+GET /health
+```
+
+**Response**
+
+```json
+{
+  "status": "UP 4"
+}
+```
+
+The endpoint provides a simple way to verify that the application is running and responding to HTTP requests.
+
+## 🚀 Implementation Workflow
+
+### 1. Develop the Flask Application
+
+Create a Flask application with a `/health` endpoint.
+
+Install the required dependencies:
+
+```text
+Flask
+gunicorn
+```
+
+Install them locally using:
+
+```bash
+pip install -r requirements.txt
+```
+
+Run the application:
+
+```bash
+python app.py
+```
+
+Test the endpoint at:
+
+```text
+http://localhost:5000/health
+```
+
+### 2. Containerize the Application with Docker
+
+Create a Dockerfile that defines the Python runtime, application files, dependencies, exposed port, and startup command.
+
+Build the image:
+
+```bash
+docker build -t flask-api .
+```
+
+Run the container:
+
+```bash
+docker run -d --name flask-api-container -p 5000:5000 flask-api
+```
+
+Test the container:
+
+```text
+http://localhost:5000/health
+```
+
+View running containers:
+
+```bash
+docker ps
+```
+
+### 3. Store the Image in Amazon ECR
+
+Create an Amazon Elastic Container Registry repository for the Flask API.
+
+Authenticate Docker with ECR:
+
+```bash
+aws ecr get-login-password --region <AWS_REGION> | docker login --username AWS --password-stdin <AWS_ACCOUNT_ID>.dkr.ecr.<AWS_REGION>.amazonaws.com
+```
+
+Tag the image:
+
+```bash
+docker tag flask-api:latest <AWS_ACCOUNT_ID>.dkr.ecr.<AWS_REGION>.amazonaws.com/flask-api:latest
+```
+
+Push the image:
+
+```bash
+docker push <AWS_ACCOUNT_ID>.dkr.ecr.<AWS_REGION>.amazonaws.com/flask-api:latest
+```
+
+The image is now stored in ECR and can be referenced by an ECS task definition.
+
+### 4. Deploy Using Amazon ECS
+
+The ECS deployment workflow consists of:
+
+1. Create an ECS cluster.
+2. Define a task definition using the ECR image.
+3. Configure the container port and task execution role.
+4. Create an ECS service using the task definition.
+5. Configure networking and security groups.
+6. Wait for the task to reach the `RUNNING` state.
+7. Test the Flask health endpoint through the configured network endpoint.
+
+Amazon ECS manages the lifecycle of the container according to the service configuration.
+
+### 5. Automate Deployment with GitHub Actions
+
+The project also includes a GitHub Actions workflow that runs when code is pushed to the `main` branch.
+
+The workflow connects to an EC2 instance over SSH and executes:
+
+```bash
+cd ~/flask-cicd-demo
+./deploy.sh
+```
+
+The workflow uses GitHub repository secrets:
+
+| Secret | Purpose |
+|---|---|
+| `EC2_HOST` | EC2 hostname or public IP |
+| `EC2_USER` | SSH username |
+| `EC2_SSH_KEY` | Private key used for SSH authentication |
+
+**Important:** This workflow automates the EC2 deployment script. To automate ECS deployments as well, the workflow would need additional steps to build and push the image to ECR and update the ECS service.
+
+## 🔐 Security Considerations
+
+- Never commit AWS access keys, SSH private keys, or other credentials to GitHub.
+- Store deployment credentials in GitHub Actions secrets.
+- Use IAM roles with least-privilege permissions.
+- Restrict EC2 and ECS security-group rules to the required ports and trusted sources.
+- Avoid exposing internal application ports unnecessarily.
+- Use environment variables for configuration and secure secret-management mechanisms for sensitive values.
+- Avoid running Flask's built-in development server in production; use a production WSGI server such as Gunicorn.
+
+## 🧪 Testing Checklist
+
+- [ ] Flask application starts successfully.
+- [ ] `GET /health` returns a successful response.
+- [ ] Docker image builds successfully.
+- [ ] Container runs locally and the health endpoint responds.
+- [ ] ECR repository contains the pushed image.
+- [ ] ECS task definition references the correct image.
+- [ ] ECS service launches a running task.
+- [ ] The deployed API is reachable through the configured endpoint.
+- [ ] GitHub Actions successfully connects to EC2 and executes `deploy.sh`, if using the EC2 deployment workflow.
+
+## 📚 Key Learnings
+
+- Building a REST API with Python Flask.
+- Packaging applications into Docker images.
+- Running containers and mapping ports.
+- Using Amazon ECR as a private container image registry.
+- Deploying containers through Amazon ECS.
+- Understanding ECS clusters, task definitions, tasks, and services.
+- Configuring IAM roles and security groups.
+- Automating deployments with GitHub Actions and SSH.
+- Using health endpoints to verify application availability.
+- Separating application configuration from source code.
+
+## 🔮 Future Enhancements
+
+- Add environment-based configuration for development and production.
+- Add structured logging and CloudWatch monitoring.
+- Configure ECS health checks and automatic recovery.
+- Automate ECR image publishing and ECS service updates through GitHub Actions.
+- Introduce an Application Load Balancer for a stable HTTP endpoint.
+- Add automated tests to the CI workflow.
+- Use AWS Secrets Manager or Systems Manager Parameter Store for sensitive configuration.
+
+## 🏁 Conclusion
+
+This project explores the container deployment lifecycle, from developing a Flask API and building a Docker image to storing container images in Amazon ECR and running them through Amazon ECS. It also introduces automated deployment using GitHub Actions and SSH.
+
+The project provides a foundation for understanding containerized application deployment, cloud infrastructure, and deployment automation on AWS.
+
+---
+
+**Project focus:** Flask API · Docker · Amazon ECR · Amazon ECS · Amazon EC2 · GitHub Actions
