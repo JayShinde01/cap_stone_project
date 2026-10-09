@@ -1,0 +1,88 @@
+/* home.css */
+
+.home-container {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+  background-color: #f0f2f5;
+  text-align: center;
+  flex-direction: row;
+}
+
+/* Main content */
+.home-content {
+  flex: 1;
+  padding: 24px;
+  overflow-y: auto;
+  background-color: #e6f0ff;
+  margin-left: 250px; /* Sidebar space on desktop */
+}
+
+/* Dashboard Title */
+.dashboard-title {
+  text-align: center;
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 24px;
+}
+
+/* Card grid layout */
+.dashboard-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 24px;
+  margin-bottom: 32px;
+}
+
+/* Card style */
+.dashboard-card {
+  background-color: white;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+/* Table wrapper */
+.table-wrapper {
+  margin-top: 32px;
+  background-color: white;
+  padding: 16px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  overflow-x: auto; /* 👈 Add horizontal scroll on mobile */
+}
+
+/* RESPONSIVE STYLES */
+@media (max-width: 768px) {
+  .home-container {
+    flex-direction: column;
+  }
+
+  .home-content {
+    margin-left: 0;         /* Remove sidebar space */
+    padding: 12px;          /* Smaller padding */
+  }
+
+  .dashboard-title {
+    font-size: 20px;
+  }
+
+  .dashboard-row {
+    grid-template-columns: 1fr; /* Single column layout */
+  }
+
+  .dashboard-card,
+  .table-wrapper {
+    padding: 12px;
+  }
+
+  /* Optional: Center-align Ant cards on mobile */
+  .ant-card {
+    margin-bottom: 16px;
+  }
+
+  /* Optional: Ensure large charts are scrollable */
+  .recharts-responsive-container {
+    overflow-x: auto;
+  }
+}

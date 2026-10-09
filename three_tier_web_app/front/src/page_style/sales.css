@@ -1,0 +1,222 @@
+/* sales.css */
+
+.ant-layout {
+  background-color: #f0f2f5;
+  display: flex;
+  min-height: 100vh;
+}
+
+.ant-layout-content {
+  padding: 24px;
+  background: #ffffff;
+  min-height: 100vh;
+  width: 80vw;
+  margin-left: 250px;
+  margin-right: 40px;
+  overflow-y: auto;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+/* Cards */
+.ant-card {
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.ant-card-head-title {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.ant-typography h2 {
+  margin-bottom: 24px;
+  font-weight: 700;
+  color: #3b3b3b;
+}
+
+/* Buttons */
+.ant-btn-primary {
+  background-color: #1890ff;
+  border-color: #1890ff;
+}
+.ant-btn-primary:hover,
+.ant-btn-primary:focus {
+  background-color: #40a9ff;
+  border-color: #40a9ff;
+}
+
+/* Layouts */
+.ant-row {
+  margin-bottom: 8px;
+}
+.product-row .ant-col {
+  padding-bottom: 8px;
+}
+
+/* Invoice Summary */
+.invoice-summary p {
+  margin: 0 0 8px 0;
+  font-size: 15px;
+}
+.invoice-summary strong {
+  color: #000000;
+  font-weight: 600;
+}
+
+/* Actions */
+.add-product-btn {
+  margin-top: 16px;
+  font-weight: 500;
+  color: #1890ff;
+  cursor: pointer;
+}
+.remove-product-btn {
+  font-weight: 500;
+  color: #ff4d4f;
+  cursor: pointer;
+}
+
+/* Disabled Input */
+input[disabled] {
+  background-color: #fafafa !important;
+  color: #595959;
+  border: 1px solid #d9d9d9;
+}
+
+/* Sidebar styling */
+.sidebar-sider {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 250px;
+  height: 100vh;
+  background-color: #001529;
+  z-index: 1000;
+  overflow-y: auto;
+}
+
+/* ✅ Responsive adjustments */
+@media (max-width: 768px) {
+  .ant-layout-content {
+    width: 100vw;
+    margin-left: 0;
+    margin-right: 0;
+    padding: 12px;
+    border-radius: 0;
+  }
+
+  .ant-card-head-title {
+    font-size: 14px;
+  }
+
+  .ant-typography h2 {
+    font-size: 18px;
+    text-align: center;
+  }
+
+  .invoice-summary p {
+    font-size: 14px;
+  }
+
+  .sidebar-sider {
+    display: none; /* Hide fixed sidebar on mobile (Drawer used instead) */
+  }
+
+  .ant-table-wrapper {
+    overflow-x: auto; /* Allow horizontal scroll for tables */
+  }
+}
+/* Fix Select dropdown width on mobile */
+.product-select .ant-select-selector {
+  width: 100% !important;
+  min-width: 100px;
+}
+
+/* Optional: Add horizontal scroll only when needed */
+.ant-card-body {
+  overflow-x: auto;
+}
+
+/* Responsive row spacing */
+@media (max-width: 768px) {
+  .product-header-row {
+    display: none; /* Hide headers on small screens if cluttered */
+  }
+
+  .product-row {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  .product-row .ant-col {
+    flex: 1 1 48%;
+    margin-bottom: 10px;
+  }
+}
+/* Field labels for mobile */
+.field-label {
+  display: none;
+  font-weight: 500;
+  font-size: 12px;
+  margin-bottom: 4px;
+  color: #595959;
+}
+
+/* Mobile-friendly product row layout */
+@media (max-width: 768px) {
+  /* Hide table headers */
+  .product-header-row {
+    display: none !important;
+  }
+
+  /* Each product block looks like a card */
+  .product-row {
+    border: 1px solid #eaeaea;
+    border-radius: 8px;
+    padding: 12px;
+    background-color: #fafafa;
+    margin-bottom: 16px;
+  }
+
+  .product-row .ant-col {
+    flex: 1 1 100%;
+    margin-bottom: 12px;
+  }
+
+  .field-label {
+    display: block;
+  }
+
+  .product-select .ant-select-selector {
+    width: 100% !important;
+  }
+
+  .ant-input-number,
+  .ant-select,
+  .ant-input {
+    width: 100% !important;
+  }
+
+  .remove-product-btn,
+  .add-product-btn {
+    text-align: center;
+    display: block;
+    width: 100%;
+  }
+}
+
+/* Show field label only on mobile */
+.field-label {
+  display: none;
+  font-weight: 500;
+  font-size: 13px;
+  margin-bottom: 4px;
+  color: #555;
+}
+
+@media (max-width: 768px) {
+  .field-label {
+    display: block;
+  }
+}

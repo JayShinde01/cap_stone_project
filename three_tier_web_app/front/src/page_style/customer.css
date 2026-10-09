@@ -1,0 +1,108 @@
+.customer-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-family: Arial, sans-serif;
+  background-color: #f8f9fa;
+  padding: 20px;
+}
+
+.customer-title {
+  font-size: 24px;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.customer-form-group {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  width: 60%;
+  margin-bottom: 15px;
+}
+
+.customer-form-field {
+  flex: 1;
+  min-width: 250px;
+  margin: 10px;
+}
+
+.customer-form-field label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.customer-form-field input,
+.customer-form-field select {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.customer-button-group {
+  margin-top: 15px;
+}
+
+.customer-button-group button {
+  margin: 5px;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.customer-add-btn {
+  background-color: #28a745;
+  color: white;
+}
+
+.customer-update-btn {
+  background-color: #007bff;
+  color: white;
+}
+
+.customer-delete-btn {
+  background-color: #dc3545;
+  color: white;
+}
+
+.customer-clear-btn {
+  background-color: #6c757d;
+  color: white;
+}
+
+.customer-button-group button:hover {
+  opacity: 0.8;
+}
+
+table {
+  width: 80%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+th, td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: center;
+}
+
+th {
+  background-color: #007bff;
+  color: white;
+}
+
+tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+tr:hover {
+  background-color: #ddd;
+}
+
+button {
+  cursor: pointer;
+}

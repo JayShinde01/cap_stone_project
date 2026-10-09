@@ -1,0 +1,24 @@
+/* Report.css */
+
+.responsive-container {
+  width: 100%;
+  overflow-x: auto;
+}
+
+/* Fix Layout on small screens */
+@media (max-width: 768px) {
+  .ant-layout {
+    flex-direction: column !important;
+  }
+
+  .ant-layout-content {
+    margin-left: 0 !important;
+    width: 100% !important;
+    padding: 16px !important;
+    border-radius: 0 !important;
+  }
+
+  .responsive-container {
+    padding: 0 8px;
+  }
+}

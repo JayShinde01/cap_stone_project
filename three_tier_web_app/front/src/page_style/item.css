@@ -1,0 +1,53 @@
+/* Default (Desktop) Styles */
+.item-wrapper {
+  display: flex;
+  height: 100vh;
+}
+
+.item-main {
+  flex: 1;
+  padding: 24px;
+  background-color: #f5f5f5;
+  overflow-y: auto;
+  margin-left: 240px; /* for fixed sidebar */
+}
+
+.item-heading {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+.item-panel {
+  background: #fff;
+  padding: 24px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* ✅ Mobile Responsive Styles */
+@media (max-width: 768px) {
+  .item-wrapper {
+    flex-direction: column;
+    height: auto;
+  }
+
+  .item-main {
+    margin-left: 0;
+    padding: 12px;
+  }
+
+  .item-heading {
+    font-size: 18px;
+    text-align: center;
+  }
+
+  .item-panel {
+    padding: 16px;
+  }
+
+  /* Optional: Make table scrollable on mobile */
+  .ant-table-wrapper {
+    overflow-x: auto;
+  }
+}

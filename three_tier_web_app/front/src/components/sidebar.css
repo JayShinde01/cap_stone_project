@@ -1,0 +1,66 @@
+/* sidebar.css */
+
+.sidebar-sider {
+  position: fixed;
+  height: 100vh;
+  left: 0;
+  top: 0;
+  background-color: #001529;
+  z-index: 1000;
+  overflow-y: auto;
+  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.15);
+}
+
+.sidebar-headerbox {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background-color: #dee1e3;
+  text-align: center;
+}
+
+.sidebar-title {
+  color: #a91010;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.sidebar-logout-btn {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80%;
+  background-color: #737577;
+
+}
+
+.mobile-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background-color: #737577;
+}
+
+.mobile-title {
+  color: rgb(216, 207, 207);
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.menu-toggle-btn {
+  color: white;
+  font-size: 22px;
+}
+
+.ant-menu-dark .ant-menu-item:hover {
+  background-color: #1890ff !important;
+  color: #fff;
+}
+
+.ant-menu-dark .ant-menu-item-selected {
+  background-color: #1890ff !important;
+  color: #fff;
+}
